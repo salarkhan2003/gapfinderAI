@@ -1,0 +1,2938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4F46E5">
+<meta name="description" content="GapFinder AI - upload your material, take a 10-question diagnostic, and see exactly which topics are costing you marks.">
+<title>GapFinder AI - Find What The Student Doesn't Know</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%234F46E5'/%3E%3Ctext x='16' y='22' font-family='Segoe UI,Arial' font-size='17' font-weight='700' fill='white' text-anchor='middle'%3EG%3C/text%3E%3C/svg%3E">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --indigo:#4F46E5;--indigo-700:#4338CA;--indigo-800:#3730A3;--indigo-50:#EEF2FF;--indigo-100:#E0E7FF;
+  --ink:#0F172A;--ink-2:#334155;--muted:#64748B;--muted-2:#94A3B8;--line:#E6EAF2;--line-2:#EFF2F7;
+  --soft:#F8FAFC;--white:#fff;
+  --green:#047857;--green-bg:#ECFDF5;--green-line:#A7F3D0;
+  --amber:#B45309;--amber-bg:#FFFBEB;--amber-line:#FCD34D;
+  --red:#B91C1C;--red-bg:#FEF2F2;--red-line:#FCA5A5;
+  --shadow:0 1px 2px rgba(15,23,42,.05),0 10px 30px -18px rgba(15,23,42,.25);
+  --shadow-lg:0 24px 60px -28px rgba(15,23,42,.35);
+  --r:18px;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--sans);font-size:15px;line-height:1.55;color:var(--ink);background:var(--white);
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+h1,h2,h3,h4,p{margin:0}
+h1{font-size:30px;line-height:1.2;letter-spacing:-.02em;font-weight:700}
+h2{font-size:19px;line-height:1.3;letter-spacing:-.01em;font-weight:650}
+h3{font-size:15px;font-weight:650}
+a{color:var(--indigo);text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input,textarea,select{font:inherit;color:inherit}
+svg{display:block}
+:focus-visible{outline:2px solid var(--indigo);outline-offset:2px;border-radius:8px}
+::selection{background:var(--indigo-100)}
+.ico{flex:none;width:18px;height:18px}
+.mut{color:var(--muted)}
+.small{font-size:13px}
+.tiny{font-size:12px}
+.b{font-weight:650}
+.mono{font-variant-numeric:tabular-nums}
+.hide{display:none!important}
+
+/* ---------- shell ---------- */
+.app{min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:258px;background:#fff;border-right:1px solid var(--line);
+  display:flex;flex-direction:column;padding:18px 14px 14px;z-index:60;transition:transform .22s ease}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 18px}
+.logo{width:38px;height:38px;border-radius:12px;background:var(--indigo);color:#fff;display:grid;place-items:center;
+  font-weight:800;font-size:18px;letter-spacing:-.03em;box-shadow:0 6px 16px -8px rgba(79,70,229,.9)}
+.brand-name{font-weight:750;font-size:16px;letter-spacing:-.02em}
+.brand-name span{color:var(--indigo)}
+.brand-sub{font-size:11px;color:var(--muted);letter-spacing:.01em}
+.nav{display:flex;flex-direction:column;gap:2px;overflow-y:auto;flex:1;padding-bottom:8px}
+.nav-lbl{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted-2);padding:14px 10px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:11px;color:var(--ink-2);
+  font-size:13.8px;font-weight:520;text-align:left;width:100%;transition:background .15s,color .15s}
+.nav-item:hover{background:var(--soft);color:var(--ink)}
+.nav-item.on{background:var(--indigo-50);color:var(--indigo-800);font-weight:650}
+.nav-item .tag{margin-left:auto;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  background:var(--ink);color:#fff;padding:2px 6px;border-radius:6px}
+.nav-item .dot{margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--red)}
+.side-foot{border-top:1px solid var(--line-2);padding-top:10px;display:flex;flex-direction:column;gap:8px}
+.user-chip{display:flex;align-items:center;gap:9px;padding:6px;border-radius:11px}
+.avatar{width:32px;height:32px;border-radius:10px;background:var(--indigo-50);color:var(--indigo-800);
+  display:grid;place-items:center;font-weight:700;font-size:12.5px;flex:none}
+.user-meta{min-width:0}
+.user-name{font-size:12.8px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:11px;color:var(--muted);text-transform:capitalize}
+.viewport{margin-left:258px;min-height:100vh;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:40;height:62px;display:flex;align-items:center;gap:12px;padding:0 26px;
+  background:rgba(255,255,255,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-2)}
+.topbar-t{font-size:13.5px;font-weight:600;color:var(--ink);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-t .sep{color:var(--muted-2);font-weight:400;margin:0 6px}
+.topbar-t .sub{color:var(--muted);font-weight:450}
+.topbar-r{margin-left:auto;display:flex;align-items:center;gap:9px}
+.streak{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:650;color:var(--amber);
+  background:var(--amber-bg);border:1px solid var(--amber-line);padding:5px 10px;border-radius:999px}
+.streak svg{width:14px;height:14px}
+.content{padding:26px 26px 90px;max-width:1160px;width:100%;margin:0 auto;animation:fade .3s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.scrim{position:fixed;inset:0;background:rgba(15,23,42,.42);z-index:55;display:none}
+.scrim.on{display:block}
+.icon-btn{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:var(--ink-2)}
+.icon-btn:hover{background:var(--soft)}
+.only-mobile{display:none}
+
+/* ---------- buttons / pills ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;
+  border-radius:11px;font-size:13.5px;font-weight:600;background:var(--indigo);color:#fff;white-space:nowrap;
+  transition:background .15s,transform .12s,box-shadow .15s;box-shadow:0 8px 18px -12px rgba(79,70,229,.9)}
+.btn:hover{background:var(--indigo-700)}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.5;cursor:not-allowed;box-shadow:none}
+.btn-ghost{background:#fff;color:var(--ink-2);border:1px solid var(--line);box-shadow:none}
+.btn-ghost:hover{background:var(--soft);color:var(--ink)}
+.btn-soft{background:var(--indigo-50);color:var(--indigo-800);box-shadow:none}
+.btn-soft:hover{background:var(--indigo-100)}
+.btn-dark{background:var(--ink);box-shadow:none}
+.btn-dark:hover{background:#1E293B}
+.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid var(--red-line);box-shadow:none}
+.btn-danger:hover{background:#FEE2E2}
+.btn-sm{height:32px;padding:0 11px;font-size:12.5px;border-radius:9px;gap:6px}
+.btn-sm svg{width:14px;height:14px}
+.btn-lg{height:50px;padding:0 22px;font-size:15px;border-radius:13px}
+.btn-block{width:100%}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.03em;
+  padding:3px 9px;border-radius:999px;border:1px solid transparent;text-transform:uppercase;white-space:nowrap}
+.pill.hi{background:var(--indigo);color:#fff}
+.pill.md{background:var(--indigo-50);color:var(--indigo-800);border-color:#C7D2FE}
+.pill.lo{background:#F1F5F9;color:#475569;border-color:#E2E8F0}
+.pill.weak{background:var(--red-bg);color:var(--red);border-color:var(--red-line)}
+.pill.med{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-line)}
+.pill.strong{background:var(--green-bg);color:var(--green);border-color:var(--green-line)}
+.pill.untested{background:#F8FAFC;color:var(--muted);border-color:var(--line)}
+.pill.plain{background:var(--soft);color:var(--ink-2);border-color:var(--line);text-transform:none;letter-spacing:0;font-weight:600}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--indigo-800);
+  background:var(--indigo-50);border:1px solid #DDE3FB;padding:3px 8px;border-radius:7px;white-space:nowrap}
+.chip svg{width:12px;height:12px}
+.chip.grey{background:var(--soft);color:var(--muted);border-color:var(--line)}
+
+/* ---------- layout primitives ---------- */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px}
+.card.pad0{padding:0;overflow:hidden}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.row{display:flex;align-items:center;gap:10px}
+.between{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.wrap{flex-wrap:wrap}
+.stack{display:flex;flex-direction:column;gap:10px}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:20px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--indigo);margin-bottom:7px}
+.sec{margin-top:26px}
+.sec-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.sec-h h2{font-size:15.5px;letter-spacing:-.01em}
+.divider{height:1px;background:var(--line-2);margin:16px 0}
+.empty{padding:26px;text-align:center;color:var(--muted);font-size:13.5px;background:var(--soft);
+  border:1px dashed var(--line);border-radius:14px}
+.banner{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:12px;font-size:13px;
+  border:1px solid var(--line);background:var(--soft);color:var(--ink-2)}
+.banner.info{background:var(--indigo-50);border-color:#DDE3FB;color:var(--indigo-800)}
+.banner.warn{background:var(--amber-bg);border-color:var(--amber-line);color:#7C2D12}
+.banner.ok{background:var(--green-bg);border-color:var(--green-line);color:#065F46}
+.banner svg{width:15px;height:15px;margin-top:2px;flex:none}
+.anl{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);background:var(--white);
+  border-radius:14px;padding:13px 15px;margin-bottom:16px;box-shadow:var(--shadow)}
+.anl.ok{border-color:var(--green-line);background:var(--green-bg)}
+.anl.bad{border-color:var(--red-line);background:var(--red-bg)}
+.anl-ic{width:27px;height:27px;border-radius:9px;display:grid;place-items:center;flex:none;
+  font-weight:800;font-size:13px;color:#fff;background:var(--indigo)}
+.anl.ok .anl-ic{background:var(--green)}.anl.bad .anl-ic{background:var(--red)}
+.anl-metrics{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.anl-note{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:11.5px;font-weight:600;
+  color:var(--amber);background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:7px;padding:3px 8px}
+.spin{width:12px;height:12px;border-radius:50%;border:2px solid currentColor;border-top-color:transparent;
+  display:inline-block;vertical-align:-2px;margin-right:6px;animation:sp .75s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.dl-opt{display:flex;gap:11px;align-items:center;text-align:left;width:100%;padding:12px 14px;border-radius:12px;
+  border:1px solid var(--line);background:var(--white);cursor:pointer;font:inherit;color:inherit;transition:.15s}
+.dl-opt:hover{border-color:var(--indigo);background:var(--indigo-50)}
+.dl-opt b{display:block;font-size:13px}.dl-opt span{display:block;font-size:11.5px;color:var(--muted);margin-top:1px}
+.dl-opt .ico{color:var(--indigo);flex:none}
+.fmt{display:inline-flex;gap:5px;flex-wrap:wrap;margin-top:9px;justify-content:center}
+.fmt span{font-size:10.5px;font-weight:700;letter-spacing:.02em;color:var(--indigo-800);background:var(--white);
+  border:1px solid var(--indigo-100);border-radius:6px;padding:2px 6px}
+.fmt span.on{background:var(--indigo);border-color:var(--indigo);color:#fff}
+
+/* ---------- micro components ---------- */
+.ring{width:118px;height:118px;border-radius:50%;flex:none;display:grid;place-items:center;position:relative;
+  background:conic-gradient(var(--indigo) calc(var(--v,0)*1%),var(--indigo-50) 0)}
+.ring-in{width:92px;height:92px;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center;gap:0}
+.ring-in b{font-size:23px;letter-spacing:-.03em;line-height:1.05;display:block}
+.ring-in span{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.bar{height:7px;border-radius:99px;background:#EDF0F6;overflow:hidden;flex:1;min-width:40px}
+.bar>i{display:block;height:100%;border-radius:99px;background:var(--indigo);transition:width .5s ease}
+.bar.r>i{background:var(--red)}
+.bar.a>i{background:var(--amber)}
+.bar.g>i{background:var(--green)}
+.tile{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 15px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.tile-l{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px}
+.tile-v{font-size:26px;font-weight:750;letter-spacing:-.03em;line-height:1.15;margin-top:6px}
+.tile-v small{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:0}
+.tile-s{font-size:11.5px;color:var(--muted);margin-top:3px}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r)}
+.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px;min-width:560px}
+.tbl th{text-align:left;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  font-weight:700;padding:13px 16px 9px;white-space:nowrap;background:#fff}
+.tbl td{padding:12px 16px;border-top:1px solid var(--line-2);vertical-align:middle}
+.tbl tbody tr:hover td{background:#FCFDFF}
+.tbl .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl .right{text-align:right}
+.heat{display:flex;gap:3px}
+.heat i{width:9px;height:9px;border-radius:3px;background:#EDF0F6}
+.heat i.on{background:var(--indigo)}
+.rag{display:flex;gap:14px;align-items:center;flex-wrap:wrap;border:1px dashed #D8DEFA;background:#FBFBFF;
+  border-radius:14px;padding:12px 15px;margin-top:26px}
+.rag-t{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:800;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--indigo-800);white-space:nowrap}
+.rag-steps{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted);line-height:1.35}
+.rag-steps b{color:var(--ink-2);font-weight:650}
+.rag-steps .n{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;background:var(--indigo);
+  color:#fff;font-size:9.5px;font-weight:800;margin-right:5px;vertical-align:1px}
+.rag-steps .arw{color:#C7CDE8}
+
+/* ---------- auth ---------- */
+body.auth .sidebar,body.auth .topbar{display:none}
+body.auth .viewport{margin-left:0}
+body.auth .content{max-width:none;padding:0;display:grid;place-items:center;min-height:100vh}
+.auth{width:100%;min-height:100vh;display:grid;grid-template-columns:1.05fr .95fr}
+.auth-art{background:var(--indigo-50);padding:56px;display:flex;flex-direction:column;justify-content:center;gap:26px;
+  border-right:1px solid #E3E8FB}
+.auth-art h1{font-size:38px;max-width:460px;line-height:1.1}
+.auth-art p{color:var(--ink-2);max-width:430px;font-size:15px}
+.auth-list{display:flex;flex-direction:column;gap:14px;max-width:430px}
+.auth-li{display:flex;gap:12px;align-items:flex-start}
+.auth-li .n{width:24px;height:24px;border-radius:8px;background:#fff;color:var(--indigo);display:grid;place-items:center;
+  font-size:11.5px;font-weight:800;flex:none;box-shadow:0 2px 6px -3px rgba(15,23,42,.3)}
+.auth-li b{display:block;font-size:13.5px}
+.auth-li span{font-size:12.5px;color:var(--muted)}
+.auth-form{display:grid;place-items:center;padding:40px 32px;background:#fff}
+.auth-card{width:100%;max-width:390px}
+.field{margin-bottom:13px}
+.label{display:block;font-size:12px;font-weight:650;color:var(--ink-2);margin-bottom:6px}
+.input{width:100%;height:44px;padding:0 13px;border-radius:11px;border:1px solid var(--line);background:#fff;
+  font-size:14px;transition:border-color .15s,box-shadow .15s}
+.input:focus{outline:none;border-color:var(--indigo);box-shadow:0 0 0 3px rgba(79,70,229,.14)}
+textarea.input{height:auto;min-height:132px;padding:12px 13px;line-height:1.55;resize:vertical;font-size:13.5px}
+.err{font-size:12.5px;color:var(--red);margin-top:8px;display:flex;gap:6px;align-items:center}
+.cred{display:inline-flex;gap:7px;align-items:center;font-size:11.5px;font-weight:600;color:var(--ink-2);
+  background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:4px 9px}
+.cred:hover{background:var(--indigo-50);border-color:#DDE3FB;color:var(--indigo-800)}
+.auth-note{font-size:11px;color:var(--muted-2);margin-top:18px;line-height:1.5}
+
+/* ---------- dashboard ---------- */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+.hero-main{border:1px solid var(--line);border-radius:20px;padding:22px;background:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero-main::after{content:"";position:absolute;right:-70px;top:-70px;width:210px;height:210px;border-radius:50%;
+  background:radial-gradient(circle at center,#EEF2FF 0%,rgba(238,242,255,0) 70%)}
+.hero-main .top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;position:relative;z-index:1}
+.next-card{background:var(--ink);color:#fff;border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.next-card .lab{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#A5B4FC}
+.next-card .ttl{font-size:17px;font-weight:700;line-height:1.3;letter-spacing:-.01em}
+.next-card .meta{font-size:12px;color:#CBD5E1;display:flex;gap:12px;flex-wrap:wrap}
+.next-card .btn{background:#fff;color:var(--ink);box-shadow:none}
+.next-card .btn:hover{background:#E2E8F0}
+.gap-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-2)}
+.gap-row:last-child{border-bottom:0;padding-bottom:0}
+.gap-row .rnk{width:22px;height:22px;border-radius:7px;background:var(--red-bg);color:var(--red);display:grid;
+  place-items:center;font-size:11px;font-weight:800;flex:none}
+.gap-row .nm{font-size:13.5px;font-weight:600}
+.qa{display:flex;flex-direction:column;align-items:flex-start;gap:7px;padding:14px;border:1px solid var(--line);
+  border-radius:13px;background:#fff;text-align:left;transition:border-color .15s,box-shadow .15s,transform .12s}
+.qa:hover{border-color:#C7D2FE;box-shadow:var(--shadow);transform:translateY(-1px)}
+.qa .q-ic{width:30px;height:30px;border-radius:9px;background:var(--indigo-50);color:var(--indigo);display:grid;place-items:center}
+.qa b{font-size:13px;font-weight:650}
+.qa span{font-size:11.5px;color:var(--muted);line-height:1.4}
+
+/* ---------- upload ---------- */
+.drop{border:1.5px dashed #CBD5E1;border-radius:14px;padding:18px;text-align:center;background:var(--soft);
+  transition:border-color .15s,background .15s;cursor:pointer}
+.drop:hover,.drop.over{border-color:var(--indigo);background:var(--indigo-50)}
+.drop b{font-size:13px}
+.drop svg{margin:0 auto;color:var(--indigo)}
+.drop span{display:block;font-size:11.5px;color:var(--muted);margin-top:3px}
+.chunk-row{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--line-2);font-size:12.5px;color:var(--ink-2)}
+.chunk-row:last-child{border-bottom:0}
+.chunk-row .cid{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;color:var(--muted);
+  background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:2px 5px;height:21px;flex:none}
+
+/* ---------- quiz ---------- */
+.q-wrap{max-width:760px;margin:0 auto}
+.q-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.timer{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;
+  color:var(--ink-2);background:#fff;border:1px solid var(--line);padding:5px 10px;border-radius:9px}
+.timer.low{color:var(--red);border-color:var(--red-line);background:var(--red-bg)}
+.q-card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px}
+.q-num{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--indigo)}
+.q-text{font-size:19px;font-weight:650;line-height:1.35;letter-spacing:-.01em;margin:10px 0 18px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:center;gap:11px;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;
+  background:#fff;text-align:left;font-size:13.8px;transition:border-color .14s,background .14s;width:100%}
+.opt:hover{border-color:#C7D2FE;background:#FCFCFF}
+.opt .k{width:23px;height:23px;border-radius:7px;background:var(--soft);border:1px solid var(--line);display:grid;
+  place-items:center;font-size:11px;font-weight:800;color:var(--muted);flex:none}
+.opt.sel{border-color:var(--indigo);background:var(--indigo-50)}
+.opt.sel .k{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.q-nav{display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+
+/* ---------- report ---------- */
+.report-hero{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:24px;
+  display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center}
+.verdict{font-size:22px;line-height:1.25;letter-spacing:-.02em;font-weight:750}
+.band{display:flex;gap:14px;flex-wrap:wrap;margin-top:9px}
+.band-i{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:650;color:var(--muted)}
+.band-i i{width:8px;height:8px;border-radius:3px;display:block}
+.gap-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.tc{border-radius:16px;border:1px solid var(--line);padding:16px;background:#fff;display:flex;flex-direction:column;gap:10px}
+.tc.weak{background:linear-gradient(#fff,#FFF9F9);border-color:var(--red-line)}
+.tc.med{background:linear-gradient(#fff,#FFFCF4);border-color:var(--amber-line)}
+.tc.strong{background:linear-gradient(#fff,#F8FEFB);border-color:var(--green-line)}
+.tc.untested{background:var(--soft);border-style:dashed}
+.tc-h{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.tc-n{font-size:13.8px;font-weight:700;line-height:1.25}
+.tc-sc{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:2px}
+.tc-why{font-size:12.3px;color:var(--ink-2);line-height:1.5}
+.tc-pr{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10.5px;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-top:1px solid rgba(15,23,42,.06);padding-top:9px;margin-top:auto}
+.tc-pr b{font-size:13px;letter-spacing:0;color:var(--ink);text-transform:none}
+.miss{border:1px solid var(--line);border-radius:13px;padding:14px;background:#fff}
+.miss-q{font-size:13.3px;font-weight:650;line-height:1.4}
+.miss-a{font-size:12px;color:var(--muted);margin-top:6px;display:flex;gap:14px;flex-wrap:wrap}
+.miss-a s{color:var(--red);text-decoration:none;font-weight:600}
+.miss-a em{color:var(--green);font-style:normal;font-weight:600}
+.miss-why{font-size:12px;color:var(--ink-2);background:var(--soft);border-radius:9px;padding:9px 11px;margin-top:9px;line-height:1.5}
+
+/* ---------- plan ---------- */
+.plan-grid{display:grid;grid-template-columns:300px 1fr;gap:18px;align-items:start}
+.slider-row{margin-bottom:20px}
+.slider-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.slider-head b{font-size:13px;font-weight:650}
+.slider-head span{font-size:13.5px;font-weight:750;color:var(--indigo);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:99px;
+  background:#E7EAF3;outline:none;margin:6px 0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;height:19px;border-radius:50%;
+  background:var(--indigo);border:3px solid #fff;box-shadow:0 1px 5px rgba(15,23,42,.35);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--indigo);
+  border:3px solid #fff;box-shadow:0 1px 5px rgba(15,23,42,.35);cursor:pointer}
+.day{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;margin-bottom:12px}
+.day-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 15px;background:var(--soft);
+  border-bottom:1px solid var(--line-2)}
+.day-h b{font-size:12.5px;letter-spacing:.02em}
+.day-h span{font-size:11px;color:var(--muted);font-weight:600}
+.sess{display:flex;gap:12px;padding:13px 15px;border-bottom:1px solid var(--line-2)}
+.sess:last-child{border-bottom:0}
+.sess-n{width:24px;height:24px;border-radius:7px;background:var(--indigo-50);color:var(--indigo-800);display:grid;
+  place-items:center;font-size:11px;font-weight:800;flex:none}
+.sess-b{flex:1;min-width:0}
+.sess-t{font-size:13.3px;font-weight:650;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sess-f{font-size:12.2px;color:var(--muted);margin-top:3px;line-height:1.45}
+.sess-x{font-size:11px;font-weight:700;color:var(--indigo-800);white-space:nowrap;padding-top:2px}
+.sess.retest{background:#FBFBFF}
+.sess.retest .sess-n{background:var(--ink);color:#fff}
+
+/* ---------- explain ---------- */
+.ex-grid{display:grid;grid-template-columns:minmax(0,1fr) 312px;gap:18px;align-items:start}
+.chat-card{position:sticky;top:76px;height:calc(100vh - 100px);min-height:440px;display:flex;
+  flex-direction:column;padding:0;overflow:hidden}
+.chat-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;
+  border-bottom:1px solid var(--line-2);background:linear-gradient(180deg,#FBFBFF,#fff)}
+.msgs{flex:1;display:flex;flex-direction:column;gap:16px;overflow-y:auto;padding:16px 14px;
+  overscroll-behavior:contain;scroll-behavior:smooth}
+.msg{display:flex;gap:10px;max-width:100%;min-width:0;overflow-wrap:anywhere}
+.msg .avatar{width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--indigo),#7C3AED);
+  color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800;flex:none;
+  box-shadow:0 2px 6px rgba(79,70,229,.28);margin-top:2px}
+.msg.u{justify-content:flex-end}
+.msg.u .bub{max-width:min(85%,560px);background:var(--indigo);color:#fff;font-size:13.6px;line-height:1.6;
+  border-radius:16px;border-bottom-right-radius:6px;padding:10px 14px;box-shadow:0 2px 8px rgba(79,70,229,.25)}
+.msg.b{align-self:stretch}
+.msg.b .bub{flex:1;min-width:0;background:#fff;border:1px solid var(--line);border-radius:16px;
+  border-top-left-radius:6px;overflow:hidden;box-shadow:var(--shadow)}
+.retr{background:#FBFBFF;border-bottom:1px solid var(--line-2)}
+.retr summary{display:flex;align-items:center;gap:8px;padding:10px 16px;cursor:pointer;user-select:none;
+  font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+  list-style:none;white-space:nowrap;overflow:hidden}
+.retr summary::-webkit-details-marker{display:none}
+.retr summary .arr{margin-left:auto;color:var(--muted-2);transition:transform .16s;flex:none;display:flex}
+.retr[open] summary .arr{transform:rotate(90deg)}
+.retr summary:hover{color:var(--indigo-800)}
+.retr-t{font-size:12.6px;color:var(--ink-2);line-height:1.6;background:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:10px 12px;margin:0 16px 10px;white-space:pre-wrap;overflow-wrap:anywhere;
+  max-height:190px;overflow-y:auto}
+.retr-m{display:flex;gap:8px;align-items:center;margin:0 16px 10px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+.answer{padding:12px 16px 14px}
+.step-h{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:800;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.answer p{font-size:14px;line-height:1.66;overflow-wrap:anywhere}
+.cite-row{display:flex;gap:7px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.sugg{display:flex;flex-wrap:wrap;gap:7px;padding:12px 14px 0}
+.sugg button{font-size:12px;color:var(--ink-2);background:var(--soft);border:1px solid var(--line);
+  border-radius:999px;padding:6px 12px;line-height:1.3;transition:all .14s;cursor:pointer}
+.sugg button:hover{background:var(--indigo-50);border-color:#DDE3FB;color:var(--indigo-800)}
+.composer{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--line-2);
+  background:rgba(255,255,255,.94)}
+.composer .input{height:44px;border-radius:12px}
+.wcard{text-align:center;padding:26px 22px}
+.w-ic{width:46px;height:46px;margin:0 auto 10px;border-radius:14px;background:var(--indigo-50);
+  color:var(--indigo);display:grid;place-items:center}
+.wcard h3{font-size:16.5px;margin-bottom:6px}
+.wcard p{font-size:13.2px;color:var(--muted);line-height:1.6;max-width:420px;margin:0 auto}
+.wcard .retr-m{justify-content:center;margin:12px 0 0}
+.typing i{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--muted-2);margin-right:3px;
+  animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}
+.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+@media(max-width:820px){
+  .chat-card{position:static;height:auto;min-height:0}
+  .msgs{max-height:56vh}
+}
+
+/* ---------- teacher ---------- */
+.cls-bar{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-2)}
+.cls-bar:last-child{border-bottom:0}
+.cls-bar .nm{width:150px;font-size:13px;font-weight:600;flex:none}
+.cls-bar .bar{height:9px}
+.cls-bar .v{width:44px;text-align:right;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums}
+
+/* ---------- modal / toast / demo ---------- */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:80;display:none;align-items:center;
+  justify-content:center;padding:18px}
+.overlay.on{display:flex}
+.modal{background:#fff;border-radius:18px;max-width:460px;width:100%;padding:22px;box-shadow:var(--shadow-lg);
+  animation:pop .18s ease both}
+@keyframes pop{from{opacity:0;transform:scale(.97) translateY(6px)}to{opacity:1;transform:none}}
+.modal h3{font-size:16px;margin-bottom:6px}
+.toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:100;display:flex;
+  flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{background:var(--ink);color:#fff;font-size:13px;font-weight:550;padding:10px 16px;border-radius:11px;
+  box-shadow:var(--shadow-lg);animation:tin .22s ease both;max-width:90vw}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.demo-ov{position:fixed;inset:0;z-index:120;background:rgba(255,255,255,.96);display:none;
+  align-items:center;justify-content:center;padding:20px}
+.demo-ov.on{display:flex}
+.demo-card{width:100%;max-width:430px}
+.demo-t{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--indigo);margin-bottom:6px}
+.demo-h{font-size:21px;font-weight:750;letter-spacing:-.02em;margin-bottom:18px}
+.demo-step{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13.3px;color:var(--muted);
+  transition:color .2s}
+.demo-step.done{color:var(--ink);font-weight:600}
+.demo-step .bx{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none}
+.demo-step.done .bx{background:var(--green);border-color:var(--green);color:#fff}
+.demo-step.act .bx{border-color:var(--indigo);border-top-color:transparent;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.demo-bar{height:5px;border-radius:99px;background:var(--indigo-50);margin-top:18px;overflow:hidden}
+.demo-bar i{display:block;height:100%;width:0;border-radius:99px;background:var(--indigo);transition:width .3s ease}
+
+/* ---------- readme footer ---------- */
+.appfoot{max-width:1160px;width:100%;margin:0 auto;padding:0 26px 34px}
+body.auth .appfoot{display:none}
+.af{border:1px solid var(--line);border-radius:14px;background:var(--soft);padding:14px 16px}
+.af-h{display:flex;align-items:center;gap:8px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:11px;font-weight:700;color:var(--ink-2);letter-spacing:.02em}
+.af-h .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.af-b{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 22px;margin-top:9px;
+  font-size:11.5px;color:var(--muted);line-height:1.55}
+.af-b b{color:var(--ink-2);font-weight:650}
+@media(max-width:820px){.af-b{grid-template-columns:1fr}.appfoot{padding:0 14px 28px}}
+
+/* ---------- responsive ---------- */
+@media(max-width:1080px){
+  .hero{grid-template-columns:1fr}
+  .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .plan-grid,.ex-grid{grid-template-columns:1fr}
+  .auth{grid-template-columns:1fr}
+  .auth-art{display:none}
+  .auth-form{padding:32px 22px}
+}
+@media(max-width:900px){
+  .gap-cols{grid-template-columns:1fr}
+  .report-hero{grid-template-columns:1fr;gap:16px}
+  .g3{grid-template-columns:1fr}
+}
+@media(max-width:820px){
+  .sidebar{transform:translateX(-100%);box-shadow:0 0 60px rgba(15,23,42,.18)}
+  .sidebar.open{transform:none}
+  .viewport{margin-left:0}
+  .only-mobile{display:grid}
+  .topbar{padding:0 14px;height:56px;gap:8px}
+  .topbar-t{font-size:12.5px}
+  .content{padding:18px 14px 80px}
+  h1{font-size:24px}
+  .hero-main,.next-card{padding:18px}
+  .report-hero{padding:18px}
+  .q-card{padding:18px}
+  .q-text{font-size:17px}
+  .msg{max-width:95%}
+  .g2{grid-template-columns:1fr}
+  .anl{flex-wrap:wrap}
+  .anl .btn-row{width:100%}
+  .anl .btn-row .btn{width:100%}
+  .streak{display:none}
+  .topbar-t .sub,.topbar-t .sep{display:none}
+  .rag{padding:11px 13px;gap:9px}
+  .page-head{flex-direction:column;align-items:flex-start;gap:12px}
+}
+@media(max-width:560px){.judge-label{display:none}}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+@media print{
+  .sidebar,.topbar,.rag,.btn{display:none!important}
+  .viewport{margin:0}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo">G</div>
+      <div>
+        <div class="brand-name">GapFinder <span>AI</span></div>
+        <div class="brand-sub">Find what you don't know</div>
+      </div>
+    </div>
+    <nav class="nav" id="nav" aria-label="Main"></nav>
+    <div class="side-foot">
+      <div class="user-chip" id="userChip"></div>
+      <button class="btn btn-ghost btn-sm btn-block" data-action="logout">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        Sign out
+      </button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim" data-action="close-nav"></div>
+  <div class="viewport">
+    <header class="topbar">
+      <button class="icon-btn only-mobile" data-action="toggle-nav" aria-label="Open menu">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="topbar-t" id="topbarTitle"></div>
+      <div class="topbar-r">
+        <div class="streak" id="streakChip"></div>
+        <button class="btn btn-dark btn-sm" data-action="judge" title="Run Judge Demo in 60 Sec">
+          <svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <span class="judge-label">Run Judge Demo in 60 Sec</span>
+        </button>
+      </div>
+    </header>
+    <main class="content" id="view" tabindex="-1"></main>
+    <div class="appfoot" id="appfoot">
+      <div class="af">
+        <div class="af-h"><span class="dot"></span> README.md<span style="color:var(--muted-2);font-weight:400">·</span><span style="font-weight:400;color:var(--muted)">GapFinder AI</span></div>
+        <div class="af-b">
+          <div><b>Deploy:</b> one file, no build step. Open index.html locally or push this folder to Vercel as a static site.</div>
+          <div><b>Offline:</b> sample material, 18 chunks and 10 cited questions ship inside this file. Attempts, plan and streak live in localStorage.</div>
+          <div><b>Groq-ready:</b> paste a key under Explain This Topic. The chunks are still the only source, so citations never break.</div>
+          <div><b>Diagnosis first:</b> priority = (100 - accuracy) × exam weight. The plan re-sorts itself after every attempt.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="overlay" id="modal" data-action="modal-bg">
+  <div class="modal" id="modalBox" role="dialog" aria-modal="true"></div>
+</div>
+<div class="demo-ov" id="demoOv" aria-live="polite">
+  <div class="demo-card">
+    <div class="demo-t">Judge Demo &middot; 60 seconds</div>
+    <div class="demo-h">Running the full GapFinder loop</div>
+    <div id="demoSteps"></div>
+    <div class="demo-bar"><i id="demoBar"></i></div>
+  </div>
+</div>
+<script>
+'use strict';
+/* ============================================================
+   GapFinder AI - single-file diagnostic engine
+   1. Upload material -> chunks  2. Retrieval -> cited answer
+   3. Diagnostic -> gap scores  -> priority-sorted plan
+   ============================================================ */
+const KEY='gapfinder.v1';
+const GROQ_STORE='gapfinder.groq.key';
+
+const TOPICS=[
+  {id:'photo',name:'Photosynthesis',chapter:'Chapter 3',weight:.20,band:'hi',
+   kw:['photosynthesis','chloroplast','chlorophyll','thylakoid','stroma','calvin','photolysis','pigment','leaves','leaf']},
+  {id:'resp',name:'Cellular Respiration',chapter:'Chapter 4',weight:.20,band:'hi',
+   kw:['respiration','glycolysis','krebs','mitochondri','pyruvate','nadh','fadh','electron transport','citric']},
+  {id:'elec',name:'Electricity',chapter:'Chapter 7',weight:.15,band:'md',
+   kw:['electric','ohm','voltage','current','resistance','circuit','watt','ampere','series','parallel','power']},
+  {id:'quad',name:'Quadratic Equations',chapter:'Chapter 2',weight:.18,band:'hi',
+   kw:['quadratic','discriminant','parabola','coefficient','equation','roots','root']},
+  {id:'trig',name:'Trigonometry',chapter:'Chapter 9',weight:.15,band:'md',
+   kw:['trigonometry','sine','cosine','tangent','sin','cos','tan','hypotenuse','theta','identity']},
+  {id:'light',name:'Light & Reflection',chapter:'Chapter 11',weight:.12,band:'lo',
+   kw:['reflection','mirror','incidence','concave','convex','focal','normal','refraction','reflected']}
+];
+const topicById=id=>TOPICS.find(t=>t.id===id);
+
+const SAMPLE_TEXT=`## Chapter 3, Section 1 — Chloroplasts and pigments
+
+Photosynthesis takes place inside the chloroplast. Chlorophyll, the green pigment inside the chloroplast, absorbs mainly red and blue-violet light and reflects green light, which is why leaves appear green to us.
+
+## Chapter 3, Section 2 — The light reactions
+
+The light reactions take place in the thylakoid membranes. There, water is split by photolysis, releasing oxygen as a by-product, while ATP and NADPH are produced for the next stage.
+
+## Chapter 3, Section 3 — The Calvin cycle
+
+The Calvin cycle takes place in the stroma, the fluid around the thylakoids, and uses ATP and NADPH to fix carbon dioxide into glucose. The Calvin cycle does not need light directly, which is why it is also called the light-independent reaction.
+
+## Chapter 4, Section 1 — Glycolysis
+
+Glycolysis happens in the cytoplasm and splits one glucose molecule into two pyruvate molecules. The net yield is 2 ATP and 2 NADH per glucose.
+
+## Chapter 4, Section 2 — The Krebs cycle
+
+The Krebs cycle, also called the citric acid cycle, takes place in the mitochondrial matrix. Each turn releases carbon dioxide and produces NADH, FADH2 and a small amount of ATP.
+
+## Chapter 4, Section 3 — The electron transport chain
+
+The electron transport chain sits on the inner mitochondrial membrane. Oxygen is the final electron acceptor, and the chain produces around 32 to 34 ATP, the largest share of the cell's energy.
+
+## Chapter 7, Section 1 — Ohm's law
+
+Ohm's law connects voltage, current and resistance: V = IR, where V is measured in volts, I in amperes and R in ohms.
+
+## Chapter 7, Section 2 — Series and parallel circuits
+
+In a series circuit the current is the same through every component, and the total resistance is the sum of the individual resistances. In a parallel circuit the voltage is the same across each branch.
+
+## Chapter 7, Section 3 — Power and energy
+
+Electrical power is P = VI, which can also be written as P = I²R. Energy consumed equals power multiplied by time, so a 60 W bulb left on for 2 hours uses 120 Wh.
+
+## Chapter 2, Section 1 — Standard form
+
+A quadratic equation is written in standard form as ax² + bx + c = 0, where a is not zero. Every quadratic can be rearranged into this form before solving.
+
+## Chapter 2, Section 2 — The discriminant
+
+For a quadratic equation ax² + bx + c = 0, the discriminant b² − 4ac tells you the nature of the roots: positive gives two distinct real roots, zero gives one repeated real root, and negative gives no real roots.
+
+## Chapter 2, Section 3 — The quadratic formula
+
+The quadratic formula is x = (−b ± √(b² − 4ac)) ÷ 2a. It solves any quadratic equation once it is written in standard form, and the sum of the roots is −b/a while the product is c/a.
+
+## Chapter 9, Section 1 — The Pythagorean identity
+
+The Pythagorean identity sin²θ + cos²θ = 1 holds for every angle θ. It follows directly from the right-triangle definitions of sine and cosine.
+
+## Chapter 9, Section 2 — Tangent
+
+tan θ = sin θ ÷ cos θ, so tangent is undefined wherever cos θ equals zero, that is at 90° and 270°.
+
+## Chapter 9, Section 3 — Right-triangle ratios
+
+In a right triangle, sin θ = opposite ÷ hypotenuse, cos θ = adjacent ÷ hypotenuse and tan θ = opposite ÷ adjacent. SOH CAH TOA is the usual memory aid.
+
+## Chapter 11, Section 1 — The law of reflection
+
+The law of reflection states that the angle of incidence equals the angle of reflection. Both angles are measured from the normal, the line perpendicular to the mirror surface.
+
+## Chapter 11, Section 2 — Plane mirrors
+
+A plane mirror forms a virtual, upright image that is the same size as the object. The image appears the same distance behind the mirror as the object is in front of it.
+
+## Chapter 11, Section 3 — Curved mirrors
+
+A concave mirror forms a real, inverted image when the object is beyond the focal point, and a virtual, magnified image when the object is inside the focal point. A convex mirror always forms a smaller, upright virtual image.`;
+
+const QUESTIONS=[
+  {id:'q1',topic:'photo',citation:'Chapter 3, Section 2',label:'the light reactions',
+   q:'Where do the light reactions of photosynthesis take place?',
+   options:['Stroma','Mitochondrial matrix','Thylakoid membranes','Cytoplasm'],answer:2,
+   why:'The thylakoid membranes host the light reactions: water is split there and ATP and NADPH are made. The stroma is where the Calvin cycle runs.'},
+  {id:'q2',topic:'photo',citation:'Chapter 3, Section 3',label:'the Calvin cycle',
+   q:'The Calvin cycle uses ATP and NADPH in order to...',
+   options:['split water into oxygen','fix carbon dioxide into glucose','absorb light energy','produce chlorophyll'],answer:1,
+   why:'The Calvin cycle fixes carbon dioxide into glucose using the ATP and NADPH made in the light reactions. It does not absorb light itself.'},
+  {id:'q3',topic:'photo',citation:'Chapter 3, Section 1',label:'chlorophyll and leaf colour',
+   q:'Why do leaves appear green?',
+   options:['Chlorophyll absorbs green light','Green light carries the most energy','Leaves emit green light','Chlorophyll reflects green light'],answer:3,
+   why:'Chlorophyll absorbs red and blue-violet light and reflects green light, and the reflected green light is what reaches your eye.'},
+  {id:'q4',topic:'resp',citation:'Chapter 4, Section 3',label:'the electron transport chain',
+   q:'What is the final electron acceptor in the electron transport chain?',
+   options:['Oxygen','Carbon dioxide','NAD⁺','Pyruvate'],answer:0,
+   why:'Oxygen accepts the electrons at the end of the chain and combines with hydrogen to form water.'},
+  {id:'q5',topic:'resp',citation:'Chapter 4, Section 1',label:'the glycolysis yield',
+   q:'What is the net ATP yield of glycolysis per glucose molecule?',
+   options:['4 ATP','32 ATP','2 ATP','36 ATP'],answer:2,
+   why:'Glycolysis splits glucose into two pyruvate and nets 2 ATP and 2 NADH. Four ATP are produced but two are spent to start the reaction.'},
+  {id:'q6',topic:'elec',citation:'Chapter 7, Section 2',label:'series circuits',
+   q:'In a series circuit, which quantity is the same through every component?',
+   options:['Voltage','Current','Resistance','Power'],answer:1,
+   why:'In series the current has only one path, so it is identical through each component while the voltage drops add up.'},
+  {id:'q7',topic:'elec',citation:'Chapter 7, Section 3',label:'electrical power',
+   q:'A 12 V supply drives a current of 3 A. What is the power delivered?',
+   options:['4 W','9 W','15 W','36 W'],answer:3,
+   why:'P = VI = 12 × 3 = 36 W. Dividing instead of multiplying is the most common slip here.'},
+  {id:'q8',topic:'quad',citation:'Chapter 2, Section 2',label:'the discriminant',
+   q:'For x² + 4x + 8 = 0 the discriminant is −16. What does that tell you?',
+   options:['Two equal real roots','Two distinct real roots','No real roots','Exactly one real root'],answer:2,
+   why:'Discriminant = b² − 4ac = 16 − 32 = −16. A negative discriminant means no real roots, so the parabola never crosses the x-axis.'},
+  {id:'q9',topic:'trig',citation:'Chapter 9, Section 1',label:'the Pythagorean identity',
+   q:'If sin θ = 0.6 and θ is acute, what is cos θ?',
+   options:['0.8','0.4','0.6','1.0'],answer:0,
+   why:'sin²θ + cos²θ = 1, so cos²θ = 1 − 0.36 = 0.64 and cos θ = 0.8 for an acute angle.'},
+  {id:'q10',topic:'light',citation:'Chapter 11, Section 1',label:'the law of reflection',
+   q:'A ray hits a mirror at 30° measured from the normal. What is the angle of reflection?',
+   options:['60°','30°','15°','120°'],answer:1,
+   why:'The angle of incidence equals the angle of reflection, and both are measured from the normal, so the angle is 30°.'}
+];
+
+/* Judge demo answer sheets: a weaker first attempt, then a slightly better second one. */
+const DEMO_A1={q1:0,q2:0,q3:0,q4:1,q5:2,q6:0,q7:3,q8:1,q9:1,q10:1};
+const DEMO_A2={q1:0,q2:1,q3:1,q4:1,q5:0,q6:1,q7:1,q8:1,q9:0,q10:1};
+
+const CLASS_TOPIC={photo:42,resp:48,elec:71,quad:55,trig:63,light:78};
+const CLASS_STUDENTS=[
+  {n:'Aarav Mehta',m:38,w:'photo'},{n:'Sofia Duarte',m:44,w:'resp'},{n:'Liam Okafor',m:47,w:'quad'},
+  {n:'Mei Lin',m:52,w:'resp'},{n:'Noah Fischer',m:55,w:'photo'},{n:'Priya Nair',m:58,w:'quad'},
+  {n:'Diego Ramos',m:61,w:'trig'},{n:'Hana Sato',m:63,w:'photo'},{n:'Omar Haddad',m:66,w:'resp'},
+  {n:'Elena Petrova',m:72,w:'quad'},{n:'Tariq Shah',m:78,w:'trig'},{n:'Zoe Bennett',m:84,w:'elec'}
+];
+
+/* ---------------- state ---------------- */
+const S={user:null,page:'login',material:null,attempts:[],plan:{days:5,hours:2},
+  streak:0,lastActive:null,minutes:0,chat:[],draft:null,groq:'',analysis:null};
+
+function persist(){
+  const d={user:S.user,attempts:S.attempts,plan:S.plan,streak:S.streak,lastActive:S.lastActive,
+    minutes:S.minutes,chat:S.chat.slice(-10),matText:S.material?S.material.text:null,
+    matName:S.material?S.material.name:null,matFormat:S.material?S.material.format:null,
+    analysis:S.analysis,groq:S.groq};
+  try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
+}
+function restore(){
+  try{
+    const d=JSON.parse(localStorage.getItem(KEY)||'{}');
+    if(d.user)S.user=d.user;
+    if(Array.isArray(d.attempts))S.attempts=d.attempts;
+    if(d.plan)S.plan=d.plan;
+    S.streak=d.streak||0; S.lastActive=d.lastActive||null; S.minutes=d.minutes||0;
+    S.chat=Array.isArray(d.chat)?d.chat:[]; S.groq=d.groq||''; S.page=S.user?'dashboard':'login';
+    S.analysis=d.analysis&&d.analysis.ok?d.analysis:null;
+    if(d.matText){S.material=parseMaterial(d.matText,d.matName||'Saved material');S.material.format=d.matFormat||'text';}
+  }catch(e){}
+}
+
+/* ---------------- utils ---------------- */
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const fmtMins=m=>m>=60?`${Math.floor(m/60)}h ${m%60?m%60+'m':''}`.trim():`${m}m`;
+const todayKey=()=>new Date().toISOString().slice(0,10);
+const latest=()=>S.attempts.length?S.attempts[S.attempts.length-1]:null;
+function fmtDate(ts){return new Date(ts).toLocaleDateString(undefined,{month:'short',day:'numeric'});}
+
+const ICONS={
+  grid:'<path d="M4 4h6.5v6.5H4zM13.5 4H20v6.5h-6.5zM4 13.5h6.5V20H4zM13.5 13.5H20V20h-6.5z"/>',
+  upload:'<path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
+  quiz:'<path d="M8 6h9M8 12h9M8 18h5"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>',
+  report:'<path d="M12 9v4m0 3h.01"/><path d="M10.3 3.9 2.6 16.9A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-3.1L13.7 3.9a2 2 0 0 0-3.4 0Z"/>',
+  plan:'<path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 9.5h16M9 3v3M15 3v3"/>',
+  chat:'<path d="M21 12a8.5 8.5 0 0 1-8.5 8.5H8l-4 2.5v-4.4A8.5 8.5 0 1 1 21 12Z"/>',
+  chart:'<path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 16v-4M13 16V7M18 16v-6"/>',
+  users:'<path d="M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1"/><circle cx="9.5" cy="8" r="3.2"/><path d="M17 11a3 3 0 1 0 0-6"/><path d="M21 20v-1a4 4 0 0 0-3-3.8"/>',
+  flame:'<path d="M12 3c3 3.6 5 5.4 5 8.6A5 5 0 0 1 7 12c0-1.5.5-2.6 1.6-3.7C9.6 9.6 10 8.2 10 6c1 .6 2 1.9 2 3 0-2 0-4 0-6Z"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>',
+  bolt:'<path d="M13 2 4.5 14H11l-1 8 8.5-12H12l1-8Z"/>',
+  download:'<path d="M12 4v11m0 0 4-4m-4 4-4-4"/><path d="M4 20h16"/>',
+  arrow:'<path d="M5 12h14m0 0-5-5m5 5-5 5"/>',
+  check:'<path d="m5 13 4 4L19 7"/>',
+  x:'<path d="M6 6l12 12M18 6 6 18"/>',
+  lock:'<path d="M6 11h12v9H6z"/><path d="M9 11V8a3 3 0 0 1 6 0v3"/>',
+  doc:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+  spark:'<path d="M12 3v4M12 17v4M4.5 12h4M15.5 12h4M6.7 6.7l2.8 2.8M14.5 14.5l2.8 2.8M17.3 6.7l-2.8 2.8M9.5 14.5l-2.8 2.8"/>',
+  target:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".6" fill="currentColor"/>'
+};
+function ico(n,s=18){return `<svg class="ico" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]||''}</svg>`;}
+
+/* ---------------- material -> chunks ---------------- */
+function kwHit(text,kw){
+  try{return new RegExp('(^|[^a-z])'+kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).test(text);}catch(e){return text.indexOf(kw)>-1;}
+}
+function parseMaterial(text,name){
+  const raw=String(text||'');
+  const blocks=raw.split(/\n\s*\n/);
+  const chunks=[]; let heading='Uploaded material'; let title='';
+  blocks.forEach(b=>{
+    let t=b.trim(); if(!t)return;
+    const lines=t.split('\n');
+    const headLike=s=>/^#{1,4}\s+/.test(s)||/^(chapter|unit|section|topic|module)\b[^.]{0,80}$/i.test(s)&&!/[.!?]$/.test(s)&&s.length<90;
+    let cut=0;
+    while(cut<lines.length&&headLike(lines[cut].trim()))cut++;
+    if(cut){
+      const first=lines[cut-1].trim();
+      const clean=first.replace(/^#{1,4}\s+/,'').replace(/^\\*\\*/,'').trim();
+      const parts=clean.split(/\s+[—–-]\s+/);
+      heading=parts[0].trim(); title=(parts[1]||'').trim();
+      t=lines.slice(cut).join('\n').trim();
+      if(!t)return;
+    }
+    let body=t.replace(/\s+/g,' ');
+    if(body.length>420){
+      const sents=splitSent(body);
+      for(let i=0;i<sents.length;i+=2){
+        const piece=sents.slice(i,i+2).join(' ').trim();
+        if(piece.length>30)chunks.push({heading,title,body:piece});
+      }
+    }else if(body.length>25)chunks.push({heading,title,body});
+  });
+  const out=chunks.map((c,i)=>({id:'c'+(i+1),topic:guessTopic(c.heading+' '+c.title+' '+c.body),...c}));
+  const words=raw.trim()?raw.trim().split(/\s+/).length:0;
+  const map=TOPICS.map(t=>{
+    const hit=out.filter(c=>c.topic===t.id);
+    return {...t,chunkCount:hit.length,source:hit.length?hit[0].heading+' — '+(hit[0].title||'source'):'Not found in material',mapped:hit.length>0};
+  });
+  return {text:raw,name:name||'Untitled material',words,chunks:out,map,at:Date.now()};
+}
+function guessTopic(text){
+  const low=text.toLowerCase(); let bestId='',best=0;
+  TOPICS.forEach(t=>{
+    let s=0; t.kw.forEach(k=>{if(kwHit(low,k))s++;});
+    if(s>best){best=s;bestId=t.id;}
+  });
+  return best>=1?bestId:'';
+}
+
+/* ---------------- retrieval ---------------- */
+const STOP=new Set('the a an of and or to in on for is are was were be been what why how when where which who whom do does did with from that this these those it its as at by not no yes if can could should would about into than then them their there here you your we our they he she also very much more most some any all use used using explain tell give show'.split(' '));
+function stem(w){return w.replace(/ies$/,'y').replace(/(ses|xes|ches|shes)$/,'s').replace(/(es|s)$/,'').replace(/(ing|ed|ly)$/,'');}
+function toks(t){return String(t).toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(w=>w.length>2&&!STOP.has(w)).map(stem);}
+function retrieve(query){
+  if(!S.material||!S.material.chunks.length)return [];
+  const qts=[...new Set(toks(query))];
+  if(!qts.length)return [];
+  const chunks=S.material.chunks;
+  const qLow=String(query).toLowerCase();
+  const sets=chunks.map(c=>new Set(toks(c.body)));
+  const heads=chunks.map(c=>new Set(toks(c.heading+' '+(c.title||''))));
+  const df={}; qts.forEach(t=>{df[t]=sets.filter(s=>s.has(t)).length;});
+  const out=chunks.map((c,i)=>{
+    const counts={}; toks(c.body).forEach(t=>{counts[t]=(counts[t]||0)+1;});
+    let body=0, head=0, matched=[];
+    qts.forEach(t=>{
+      const idf=Math.log(1+chunks.length/Math.max(1,df[t]));
+      const n=counts[t]||0;
+      if(n){body+=Math.min(n,3)*idf; matched.push(t);}
+      if(heads[i].has(t)){head+=idf*1.6; if(!matched.includes(t))matched.push(t);}
+    });
+    let meta=0;
+    if(c.heading&&qLow.includes(c.heading.toLowerCase()))meta+=4;
+    const norm=+(((body*0.6+head+meta)/Math.sqrt(qts.length)).toFixed(2));
+    return {...c,score:norm,matched};
+  }).filter(c=>c.score>=1.2).sort((a,b)=>b.score-a.score);
+  return out;
+}
+function splitSent(t){return String(t).replace(/([.!?])\s+/g,'$1|').split('|').map(s=>s.trim()).filter(Boolean);}
+function sentences(text){return splitSent(text).filter(s=>s.length>20);}
+function extractAnswer(chunk,query){
+  const qs=new Set(toks(query));
+  const ss=sentences(chunk.body).map((s,i)=>({s,i,sc:toks(s).filter(t=>qs.has(t)).length}));
+  ss.sort((a,b)=>b.sc-a.sc||a.i-b.i);
+  const pick=ss.slice(0,2).sort((a,b)=>a.i-b.i).map(x=>x.s);
+  return pick.length?pick.join(' '):chunk.body;
+}
+
+/* ---------------- scoring ---------------- */
+function scoreAttempt(answers){
+  const per={}; TOPICS.forEach(t=>per[t.id]={total:0,correct:0,missed:[]});
+  let correct=0;
+  QUESTIONS.forEach((q,i)=>{
+    const p=per[q.topic]; p.total++;
+    if(answers[i]===q.answer){p.correct++;correct++;}
+    else p.missed.push(q.id);
+  });
+  return {correct,total:QUESTIONS.length,acc:Math.round(correct/QUESTIONS.length*100),per};
+}
+function makeAttempt(answers,sec,mode){
+  const sc=scoreAttempt(answers);
+  return {id:'a'+Date.now()+Math.floor(Math.random()*90),n:S.attempts.length+1,at:Date.now(),
+    answers,correct:sc.correct,total:sc.total,acc:sc.acc,per:sc.per,sec:sec||0,mode:mode||'quiz'};
+}
+function reasonFor(t,p,tested){
+  if(!tested)return 'No questions landed on this topic in this attempt, so it stays untested.';
+  const wrong=p.total-p.correct;
+  if(!wrong)return `All ${p.total} question${p.total>1?'s':''} correct. This topic is holding up under exam weight ${Math.round(t.weight*100)}%.`;
+  const missed=p.missed.map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean);
+  const label=missed[0]?missed[0].label:'the core definitions';
+  return `You got ${wrong} of ${p.total} wrong, mostly about ${label}.`;
+}
+function gapRows(att){
+  return TOPICS.map(t=>{
+    const p=att&&att.per[t.id]?att.per[t.id]:{total:0,correct:0,missed:[]};
+    const tested=p.total>0;
+    const acc=tested?Math.round(p.correct/p.total*100):0;
+    const priority=tested?+(((100-acc)*t.weight).toFixed(1)):0;
+    const band=!tested?'untested':acc>=80?'strong':acc>=50?'med':'weak';
+    return {...t,tested,total:p.total,correct:p.correct,missed:p.missed,acc,priority,band,
+      why:reasonFor(t,p,tested)};
+  }).sort((a,b)=>b.priority-a.priority||b.weight-a.weight);
+}
+function masteryNow(){const a=latest();return a?a.acc:0;}
+function bandLabel(b){return b==='weak'?'Weak':b==='med'?'Medium':b==='strong'?'Strong':'Not tested';}
+function bandPill(b,extra=''){return `<span class="pill ${b}">${bandLabel(b)}${extra}</span>`;}
+function heatPill(w){const c=w>=.18?'hi':w>=.14?'md':'lo';const l=w>=.18?'High':w>=.14?'Medium':'Low';return `<span class="pill ${c}">${l} ${Math.round(w*100)}%</span>`;}
+
+/* ---------------- plan ---------------- */
+function planSessions(){
+  const rows=gapRows(latest());
+  const days=clamp(+S.plan.days||5,1,14), hours=clamp(+S.plan.hours||2,1,4);
+  const totalMin=days*hours*60;
+  const perDay=hours<=1?1:hours<=2?2:3;
+  const studySlots=Math.max(1,days*perDay-(days>=2?1:0));
+  const reps=r=>r.priority>=12?3:r.priority>=7?2:r.priority>=2?1:0;
+  const pool=[];
+  for(let round=0;round<3;round++){
+    rows.forEach(r=>{if(reps(r)>round)pool.push(r);});
+  }
+  if(!pool.length)rows.slice(0,3).forEach(r=>pool.push(r));
+  const list=[];
+  for(let i=0;i<studySlots;i++)list.push(pool[i%pool.length]);
+  const perSession=Math.max(10,Math.round(totalMin/(studySlots+1)/5)*5);
+  const sessions=list.map((r,i)=>{
+    const cited=(r.tested?r.missed||[]:[]);
+    const q=QUESTIONS.find(x=>x.topic===r.id&&cited.includes(x.id))||QUESTIONS.find(x=>x.topic===r.id);
+    const chunk=S.material&&S.material.chunks.find(c=>c.heading===(q?q.citation:''));
+    return {day:Math.min(days,Math.floor(i/perDay)+1),topic:r,mins:perSession,kind:'study',
+      citation:q?q.citation:r.chapter,focus:q?`Re-read ${q.citation} on ${q.label}. Write a three-line summary from memory, then answer three recall questions without notes.`
+        :`Re-read ${r.chapter} and write a three-line summary from memory.`,
+      chunk:chunk?chunk.id:null};
+  });
+  const weakest=rows.filter(r=>r.tested)[0]||rows[0];
+  sessions.push({day:days,topic:weakest,mins:Math.min(30,Math.max(15,Math.round(totalMin*0.1/5)*5)),kind:'retest',
+    citation:'Same 10 questions',focus:`Re-test now. If ${weakest.name} moves above 80%, the plan rebuilds itself around the next gap.`});
+  const grouped={};
+  sessions.forEach(s=>{(grouped[s.day]=grouped[s.day]||[]).push(s);});
+  return {days,hours,totalMin,perDay,sessions,grouped,rows};
+}
+
+/* ---------------- ui helpers ---------------- */
+function toast(msg){
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  $('#toasts').appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(8px)';t.style.transition='all .25s';},2200);
+  setTimeout(()=>t.remove(),2600);
+}
+function modal(html){$('#modalBox').innerHTML=html;$('#modal').classList.add('on');}
+function closeModal(){$('#modal').classList.remove('on');}
+function saveBlob(filename,blob){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a);
+  a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),2000);
+  toast('Saved '+filename);
+}
+function download(filename,text){
+  saveBlob(filename,new Blob([text],{type:'text/plain;charset=utf-8'}));
+}
+function ragNote(){
+  return `<div class="rag">
+    <div class="rag-t">${ico('spark',13)} RAG explainer</div>
+    <div class="rag-steps">
+      <span><span class="n">1</span><b>Retrieval</b> finds chunks</span><span class="arw">→</span>
+      <span><span class="n">2</span><b>Generation</b> uses ONLY those chunks</span><span class="arw">→</span>
+      <span><span class="n">3</span><b>Citation</b> links to source</span>
+    </div>
+    <div class="tiny mut" style="margin-left:auto">No outside knowledge.</div>
+  </div>`;
+}
+function touchDay(){
+  const t=todayKey();
+  if(S.lastActive===t)return;
+  if(S.lastActive){
+    const d=Math.round((new Date(t)-new Date(S.lastActive))/86400000);
+    S.streak=d===1?(S.streak||0)+1:1;
+  }else S.streak=1;
+  S.lastActive=t; persist();
+}
+
+/* ================= shell + router ================= */
+const NAV=[
+  {id:'dashboard',label:'Dashboard',icon:'grid'},
+  {id:'upload',label:'Upload & Topic Map',icon:'upload'},
+  {id:'quiz',label:'Diagnostic Quiz',icon:'quiz'},
+  {id:'report',label:'Gap Report',icon:'report',tag:'Hero'},
+  {id:'plan',label:'Revision Plan',icon:'plan'},
+  {id:'explain',label:'Explain This Topic',icon:'chat'},
+  {id:'progress',label:'Progress',icon:'chart'},
+  {id:'teacher',label:'Teacher View',icon:'users',tag:'Bonus'}
+];
+const TITLES={
+  dashboard:['Dashboard','Your gaps, ranked'],upload:['Upload & Topic Map','Material to chunks'],
+  quiz:['Diagnostic Quiz','10 questions, cited'],report:['Gap Report','Diagnosis first'],
+  plan:['Revision Plan','Weakest x exam weight'],explain:['Explain This Topic','Answers only from your material'],
+  progress:['Progress','Attempts and improvement'],teacher:['Teacher View','Class-level blind spots']
+};
+function renderShell(){
+  const auth=!S.user||S.page==='login';
+  const nav=$('#nav'), chip=$('#userChip'), st=$('#streakChip'), tt=$('#topbarTitle');
+  if(auth){nav.innerHTML='';chip.innerHTML='';st.innerHTML='';tt.innerHTML='';return;}
+  nav.innerHTML='<div class="nav-lbl">Workspace</div>'+NAV.map(n=>{
+    const on=S.page===n.id;
+    return `<button class="nav-item${on?' on':''}" data-action="go" data-page="${n.id}"${on?' aria-current="page"':''}>
+      ${ico(n.icon)}<span>${n.label}</span>${n.tag?`<span class="tag">${n.tag}</span>`:''}</button>`;
+  }).join('');
+  const u=S.user;
+  const ini=u.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
+  chip.innerHTML=`<div class="avatar">${esc(ini)}</div><div class="user-meta">
+    <div class="user-name">${esc(u.name)}</div><div class="user-role">${esc(u.role)} account</div></div>`;
+  st.innerHTML=`${ico('flame',14)}<span>${S.streak} day streak</span>`;
+  const t=TITLES[S.page]||TITLES.dashboard;
+  tt.innerHTML=`${t[0]}<span class="sep">/</span><span class="sub">${t[1]}</span>`;
+}
+function go(page){
+  S.page=page;
+  $('#sidebar').classList.remove('open');
+  $('#scrim').classList.remove('on');
+  render();
+}
+function render(){
+  const auth=!S.user||S.page==='login';
+  document.body.classList.toggle('auth',auth);
+  if(!auth)ensureMaterial();
+  renderShell();
+  const view=$('#view');
+  if(auth){view.innerHTML=loginPage();return;}
+  const map={dashboard:dashPage,upload:uploadPage,quiz:quizPage,report:reportPage,plan:planPage,
+    explain:explainPage,progress:progressPage,teacher:teacherPage};
+  const fn=map[S.page]||dashPage;
+  view.innerHTML=fn()+ragNote();
+  if(S.page==='quiz')startTimer();
+  if(S.page==='explain')setTimeout(()=>{const i=$('#chatInput');if(i&&window.innerWidth>820)i.focus();},60);
+}
+
+/* ================= login ================= */
+function loginPage(){
+  return `<div class="auth">
+  <div class="auth-art">
+    <div class="row" style="gap:11px">
+      <div class="logo">G</div>
+      <div><div class="brand-name" style="font-size:17px">GapFinder <span>AI</span></div>
+      <div class="brand-sub">Find what you don't know</div></div>
+    </div>
+    <div>
+      <h1>Answers are not the point.<br>Seeing the gaps is.</h1>
+      <p style="margin-top:12px">Upload your material, take ten cited questions, and get a ranked diagnosis of the topics costing you marks - then a plan that rebuilds itself after every re-test.</p>
+    </div>
+    <div class="auth-list">
+      <div class="auth-li"><span class="n">1</span><div><b>Retrieval, not guessing</b><span>Every answer is pulled from a chunk of your own uploaded material.</span></div></div>
+      <div class="auth-li"><span class="n">2</span><div><b>Priority = (100 - Accuracy) x Exam Weight</b><span>A 40% topic worth 20% of the exam outranks a 40% topic worth 8%.</span></div></div>
+      <div class="auth-li"><span class="n">3</span><div><b>Plans that update themselves</b><span>Re-test, and the schedule re-sorts around the new weakest topic.</span></div></div>
+    </div>
+    ${ragNote()}
+  </div>
+  <div class="auth-form"><div class="auth-card">
+    <h2 style="font-size:24px;letter-spacing:-.02em">Sign in</h2>
+    <p class="small mut" style="margin:6px 0 18px">Demo accounts only. Everything is stored in this browser.</p>
+    <form id="loginForm" novalidate>
+      <div class="field"><label class="label" for="email">Email</label>
+        <input class="input" id="email" type="email" autocomplete="username" placeholder="demo@student.com" value="demo@student.com"></div>
+      <div class="field"><label class="label" for="pass">Password</label>
+        <input class="input" id="pass" type="password" autocomplete="current-password" placeholder="demo123" value="demo123"></div>
+      <div id="loginErr"></div>
+      <button class="btn btn-block btn-lg" type="submit" style="margin-top:8px">${ico('lock',16)} Sign in</button>
+    </form>
+    <div style="display:flex;align-items:center;gap:10px;margin:18px 0">
+      <div style="height:1px;background:var(--line);flex:1"></div><span class="tiny mut">or</span>
+      <div style="height:1px;background:var(--line);flex:1"></div></div>
+    <button class="btn btn-dark btn-block btn-lg" data-action="judge">${ico('bolt',16)} Judge Demo Mode - 1 Click</button>
+    <button class="btn btn-soft btn-block" style="margin-top:9px;height:44px" data-action="demo-student">Continue as Demo Student</button>
+    <div class="row wrap" style="margin-top:16px;gap:7px">
+      <button class="cred" data-action="fill" data-e="demo@student.com" data-p="demo123">${ico('check',12)} student</button>
+      <button class="cred" data-action="fill" data-e="teacher@demo.com" data-p="teacher123">${ico('users',12)} teacher</button>
+      <span class="tiny mut" style="margin-left:auto">demo@student.com / demo123</span>
+    </div>
+    <p class="auth-note">Judge demo runs the whole loop in about 5 seconds: sample material, a weaker first attempt, a second attempt with realistic mistakes, then the gap report and the rebuilt plan.</p>
+  </div></div>
+</div>`;
+}
+function signIn(user){
+  S.user=user; touchDay(); ensureMaterial();
+  S.page=user.role==='teacher'?'teacher':'dashboard';
+  persist(); render();
+  toast(`Signed in as ${user.name}`);
+}
+function doLogin(email,pass){
+  const e=String(email||'').trim().toLowerCase(), p=String(pass||'');
+  if(e==='demo@student.com'&&p==='demo123')return signIn({name:'Demo Student',email:e,role:'student'});
+  if(e==='teacher@demo.com'&&p==='teacher123')return signIn({name:'Teacher Demo',email:e,role:'teacher'});
+  const box=$('#loginErr');
+  if(box)box.innerHTML=`<div class="err">${ico('x',13)} Those credentials do not match. Try demo@student.com / demo123.</div>`;
+}
+function ensureMaterial(){
+  if(!S.material)S.material=parseMaterial(SAMPLE_TEXT,'Sample study material');
+}
+
+/* ================= dashboard ================= */
+function dashPage(){
+  const a=latest();
+  const rows=gapRows(a);
+  const m=masteryNow();
+  const weak=rows.filter(r=>r.band==='weak');
+  const top=rows.filter(r=>r.tested).slice(0,3);
+  const plan=planSessions();
+  const next=plan.sessions[0];
+  const hours=Math.floor(S.minutes/60), mins=S.minutes%60;
+  const headline=a?`${m}% mastery - ${weak.length} weak topic${weak.length===1?'':'s'} found`:
+    `You have ${S.material?S.material.chunks.length:0} chunks indexed. Ready for the diagnostic.`;
+  const sub=a?`Attempt ${a.n} of ${S.attempts.length} · ${a.correct}/${a.total} correct. Biggest gap: ${rows[0]?rows[0].name:'-'} (${rows[0]?rows[0].why:''})`
+    :`Ten cited questions across ${S.material?S.material.map.filter(x=>x.mapped).length:0} mapped topics. It takes about five minutes.`;
+  return `
+  <div class="page-head">
+    <div><div class="eyebrow">${a?`Attempt ${a.n} · ${fmtDate(a.at)}`:'Start here'}</div><h1>${esc((S.user&&S.user.name?S.user.name.split(' ')[0]:'Student'))}, here is where you stand</h1></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" data-action="go" data-page="upload">${ico('upload',15)} Material</button>
+      <button class="btn" data-action="start-quiz">${ico('quiz',15)} ${a?'Re-test now':'Start diagnostic'}</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-main">
+      <div class="top">
+        <div>
+          <div class="eyebrow">${a?'Diagnosis':'Not tested yet'}</div>
+          <div class="verdict">${esc(headline)}</div>
+          <div class="small mut" style="margin-top:8px;max-width:430px;line-height:1.55">${esc(sub)}</div>
+        </div>
+        <div class="ring" style="--v:${m}"><div class="ring-in"><b>${m}%</b><span>Mastery</span></div></div>
+      </div>
+      <div class="btn-row" style="margin-top:18px">
+        ${a?`<button class="btn" data-action="go" data-page="report">${ico('report',15)} Open gap report</button>`:`<button class="btn" data-action="start-quiz">${ico('target',15)} Take the 10-question diagnostic</button>`}
+        <button class="btn btn-ghost" data-action="go" data-page="plan">${ico('plan',15)} Plan ${plan.days} days</button>
+      </div>
+    </div>
+    <div class="next-card">
+      <div class="lab">Next task · Day ${next.day}</div>
+      <div class="ttl">${esc(next.topic.name)}</div>
+      <div class="meta">${ico('clock',13)} ${next.mins} min · ${esc(next.citation)}</div>
+      <div class="tiny" style="color:#94A3B8;line-height:1.5">${esc(next.focus)}</div>
+      <button class="btn btn-block" data-action="go" data-page="plan" style="margin-top:auto">Open revision plan ${ico('arrow',15)}</button>
+    </div>
+  </div>
+
+  <div class="grid g4" style="margin-top:16px">
+    <div class="tile"><div class="tile-l">${ico('report',13)} Weak topics</div>
+      <div class="tile-v">${weak.length}<small> of ${TOPICS.length}</small></div>
+      <div class="tile-s">${weak.length?weak.map(w=>esc(w.name)).slice(0,2).join(', '):'No weak topics yet'}</div></div>
+    <div class="tile"><div class="tile-l">${ico('target',13)} Priority #1</div>
+      <div class="tile-v" style="font-size:19px">${esc(rows[0]?rows[0].name:'-')}</div>
+      <div class="tile-s">Priority score ${rows[0]?rows[0].priority:'0'} · weight ${rows[0]?Math.round(rows[0].weight*100):0}%</div></div>
+    <div class="tile"><div class="tile-l">${ico('flame',13)} Streak</div>
+      <div class="tile-v">${S.streak}<small> day${S.streak===1?'':'s'}</small></div>
+      <div class="tile-s">Last active ${S.lastActive||'today'}</div></div>
+    <div class="tile"><div class="tile-l">${ico('clock',13)} Time studied</div>
+      <div class="tile-v">${S.minutes}<small> min</small></div>
+      <div class="tile-s">${hours}h ${mins}m across ${S.attempts.length} attempt${S.attempts.length===1?'':'s'}</div></div>
+  </div>
+
+  ${weak.length?`<div class="banner" style="margin-top:16px;background:var(--red-bg);border-color:var(--red-line);color:#7F1D1D">
+    ${ico('report',15)}<div><b>Weak topic alert:</b> ${weak.map(w=>esc(w.name)).join(', ')} - ${weak.length===1?'this is':'these are'} below 50% accuracy and carry ${Math.round(weak.reduce((s,w)=>s+w.weight,0)*100)}% of the exam weight.</div></div>`:''}
+
+  <div class="sec">
+    <div class="sec-h"><h2>Top 3 gaps, in ten seconds</h2>
+      ${a?`<button class="btn btn-ghost btn-sm" data-action="go" data-page="report">Full diagnosis ${ico('arrow',14)}</button>`:''}</div>
+    <div class="card">
+      ${top.length?top.map((r,i)=>`
+        <div class="gap-row">
+          <span class="rnk">${i+1}</span>
+          <div style="flex:1;min-width:0">
+            <div class="row" style="gap:8px;flex-wrap:wrap"><span class="nm">${esc(r.name)}</span>${bandPill(r.band)}
+              <span class="tiny mut">priority ${r.priority}</span></div>
+            <div class="tiny mut" style="margin-top:2px">${esc(r.why)}</div>
+          </div>
+          <div class="bar ${r.band==='weak'?'r':r.band==='med'?'a':'g'}" style="max-width:110px"><i style="width:${r.acc}%"></i></div>
+          <button class="btn btn-ghost btn-sm" data-action="explain-topic" data-topic="${r.id}">Explain</button>
+        </div>`).join('')
+      :`<div class="empty">No diagnosis yet. Take the 10-question diagnostic and your three biggest gaps appear here with reasons.</div>`}
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><h2>Quick actions</h2></div>
+    <div class="grid g3">
+      ${qa('upload','Upload material','Paste text or drop a file, then check the 6-topic map')}
+      ${qa('quiz','Run diagnostic','10 MCQs, each with a chunk citation and a timer')}
+      ${qa('report','Read gap report','Weak, medium and strong with priority scores')}
+      ${qa('plan','Build a plan','1-14 days, 1-4 hours, sorted weakest first')}
+      ${qa('explain','Ask the material','Cited answers, or an honest "not in your material"')}
+      ${qa('progress','Track progress','Attempt history and per-topic improvement')}
+    </div>
+  </div>`;
+}
+function qa(page,title,desc){
+  const icon={upload:'upload',quiz:'quiz',report:'report',plan:'plan',explain:'chat',progress:'chart'}[page]||'grid';
+  return `<button class="qa" data-action="go" data-page="${page}">
+    <span class="q-ic">${ico(icon,16)}</span><b>${title}</b><span>${desc}</span></button>`;
+}
+
+/* ================= upload + topic map ================= */
+function uploadPage(){
+  const mat=S.material;
+  const a=latest();
+  const rows=gapRows(a);
+  const mapped=mat?mat.map.filter(m=>m.mapped).length:0;
+  return `
+  <div class="page-head">
+    <div><div class="eyebrow">Step 1 · Source of truth</div><h1>Upload & topic map</h1>
+      <p class="small mut" style="margin-top:6px;max-width:560px">Everything downstream - quiz citations, explanations and the plan - is built only from these chunks.</p></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" data-action="load-sample">${ico('doc',15)} Load Sample Material</button>
+      <button class="btn" data-action="analyze">${ico('bolt',15)} Analyze Material</button>
+    </div>
+  </div>
+
+  ${analysisBanner()}
+
+  <div class="grid g2" style="align-items:start">
+    <div class="card">
+      <h2 style="margin-bottom:4px">Paste your material</h2>
+      <p class="tiny mut" style="margin-bottom:12px">Headings become citations. Blank lines separate chunks.</p>
+      <textarea class="input" id="materialText" spellcheck="false" placeholder="## Chapter 3, Section 2 - The light reactions&#10;&#10;The light reactions take place in the thylakoid membranes...">${esc(mat?mat.text:'')}</textarea>
+      <div class="row" style="margin-top:10px;justify-content:space-between">
+        <span class="tiny mut">${mat?`${mat.words} words · ${mat.chunks.length} chunks indexed`:'Nothing indexed yet'}</span>
+        <button class="btn btn-sm" data-action="analyze">${ico('bolt',14)} Analyze</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="margin-bottom:4px">Or drop a file</h2>
+      <p class="tiny mut" style="margin-bottom:12px">PDF, Word (.docx), PowerPoint (.pptx), Excel (.xlsx), RTF, CSV, TXT or Markdown. Parsed locally in your browser - nothing is uploaded to a server.</p>
+      <div class="drop" id="dropZone" data-action="pick-file">
+        ${ico('upload',22)}
+        <b style="display:block;margin-top:6px">Choose a PDF, Word, PowerPoint, Excel, RTF, CSV or TXT file</b>
+        <span>or drag one into this box</span>
+        <div class="fmt"><span class="on">PDF</span><span class="on">DOCX</span><span class="on">PPTX</span><span class="on">XLSX</span><span class="on">RTF</span><span class="on">CSV</span><span class="on">TXT</span><span>DOC*</span><span>PPT*</span></div>
+      </div>
+      <input type="file" id="fileInput" hidden accept=".txt,.text,.md,.markdown,.csv,.tsv,.pdf,.doc,.docx,.docm,.xls,.xlsx,.xlsm,.ppt,.pptx,.pptm,.rtf,text/plain,text/markdown,text/csv,application/pdf,application/rtf,application/msword,application/mspowerpoint,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation">
+      <p class="tiny mut" style="margin-top:8px">*Legacy .doc/.xls/.ppt are read best-effort - re-saving as .docx/.xlsx/.pptx gives cleaner citations.</p>
+      <div class="divider"></div>
+      <div class="row" style="justify-content:space-between"><span class="tiny mut">Currently loaded</span><span class="small b">${esc(mat?mat.name:'-')}</span></div>
+      <div class="row" style="justify-content:space-between;margin-top:6px"><span class="tiny mut">Last indexed</span><span class="small b">${mat?fmtDate(mat.at):'-'}</span></div>
+      <div class="banner ok" style="margin-top:12px">${ico('check',15)}<div>${mat?`${mat.chunks.length} chunks · ${mapped}/6 syllabus topics mapped.`:'Load the sample to see the full 6-topic map.'}</div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><h2>Topic map</h2><span class="tiny mut">Source · exam weight · status</span></div>
+    <div class="card pad0"><div class="tbl-scroll"><table class="tbl">
+      <thead><tr><th>Topic</th><th>Source in material</th><th>Exam weight</th><th>Status</th><th class="right">Priority</th></tr></thead>
+      <tbody>${rows.map(r=>{
+        const mm=mat?mat.map.find(x=>x.id===r.id):null;
+        return `<tr>
+          <td><div class="b" style="font-size:13.5px">${esc(r.name)}</div><div class="tiny mut">${esc(r.chapter)}</div></td>
+          <td><div class="tiny" style="max-width:250px;line-height:1.4">${mm&&mm.mapped?esc(mm.source):'<span style="color:var(--red)">Not found in material</span>'}</div>
+            <div class="tiny mut" style="margin-top:2px">${mm?mm.chunkCount:0} chunk${mm&&mm.chunkCount===1?'':'s'}</div></td>
+          <td>${heatPill(r.weight)}<div class="heat" style="margin-top:6px">${[1,2,3].map(i=>`<i class="on${i<3?' mid':''}" style="${i<=Math.ceil(r.weight*15)?'':'opacity:.12'}"></i>`).join('')}</div></td>
+          <td>${bandPill(r.band)}</td>
+          <td class="num right">${r.tested?r.priority:'-'}</td></tr>`;
+      }).join('')}</tbody>
+    </table></div></div>
+  </div>
+
+  ${mat&&mat.chunks.length?`<div class="sec">
+    <div class="sec-h"><h2>Indexed chunks</h2>
+      <button class="btn btn-ghost btn-sm" data-action="toggle-chunks">Show all ${mat.chunks.length}</button></div>
+    <div class="card" id="chunkList" style="display:none">
+      ${mat.chunks.map(c=>`<div class="chunk-row"><span class="cid">${c.id}</span>
+        <div style="flex:1;min-width:0"><div class="b" style="font-size:12px">${esc(c.heading)}</div>
+        <div class="mut" style="margin-top:2px">${esc(c.body.slice(0,140))}${c.body.length>140?'...':''}</div></div>
+        ${c.topic?`<span class="pill med" style="align-self:flex-start">${esc(topicById(c.topic).name.split(' ')[0])}</span>`:'<span class="pill untested" style="align-self:flex-start">unmapped</span>'}</div>`).join('')}
+    </div></div>`:''}
+
+  <div class="sec"><div class="btn-row">
+    <button class="btn" data-action="start-quiz">${ico('quiz',15)} Generate diagnostic from this material</button>
+    <button class="btn btn-ghost" data-action="go" data-page="explain">${ico('chat',15)} Test retrieval first</button>
+  </div></div>`;
+}
+function applyMaterial(text,name,quiet){
+  if(!String(text||'').trim()){toast('Paste some text first, or load the sample.');return false;}
+  S.material=parseMaterial(text,name||'Pasted material');
+  const mapped=S.material.map.filter(m=>m.mapped).length;
+  persist();
+  if(!quiet)toast(`${S.material.chunks.length} chunks indexed · ${mapped}/6 topics mapped`);
+  return true;
+}
+/* Explicit success/failure panel - the Analyze button must always answer back. */
+function analysisBanner(){
+  const a=S.analysis; if(!a)return '';
+  const t=new Date(a.at).toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+  if(!a.ok)return `<div class="anl bad" id="analysisResult">
+    <div class="anl-ic">!</div>
+    <div style="flex:1;min-width:180px">
+      <div class="b" style="color:var(--red)">Analyze failed</div>
+      <div class="tiny" style="margin-top:3px;color:#7F1D1D">${esc(a.msg||'Could not read that material.')}</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" data-action="load-sample">Load sample instead</button>
+  </div>`;
+  return `<div class="anl ok" id="analysisResult">
+    <div class="anl-ic">${ico('check',15)}</div>
+    <div style="flex:1;min-width:180px">
+      <div class="b" style="color:#065F46">Analyzed successfully - ${a.chunks} chunks indexed and searchable.</div>
+      <div class="tiny mut" style="margin-top:3px">${esc(a.name)} · ${a.words} words · ${a.ms} ms · ${t}</div>
+      <div class="anl-metrics">
+        <span class="pill strong">${a.chunks} chunks</span>
+        <span class="pill ${a.topics?'strong':'med'}">${a.topics}/6 topics mapped</span>
+        <span class="pill med">${a.questions}/10 questions ready</span>
+        <span class="pill plain">${esc(String(a.format||'text').toUpperCase())}</span>
+      </div>
+      ${a.small?`<div class="anl-note">${ico('spark',12)} Short file - only ${a.letters||0} readable characters. Add more rows or paragraphs for full 6/6 coverage.</div>`:''}
+    </div>
+    <div class="btn-row"><button class="btn btn-sm" data-action="start-quiz">${ico('quiz',14)} Start diagnostic</button></div>
+  </div>`;
+}
+async function doAnalyze(){
+  const ta=$('#materialText');
+  const text=ta?ta.value:(S.material?S.material.text:'');
+  const t0=Date.now();
+  setBusy(true);
+  await new Promise(r=>setTimeout(r,90));
+  try{
+    if(!String(text||'').trim())throw new Error('Nothing to analyze - paste some text or drop a PDF, Word, PowerPoint, Excel or CSV file first.');
+    if(looksGarbage(text))throw new Error('That text is binary data (file bytes or embedded font tables), not study material - analyzing it would produce garbage. Import the original document (PDF, PPTX, DOCX, XLSX) or paste clean text.');
+    const mat=parseMaterial(text,(S.material&&S.material.name)||'Pasted material');
+    if(!mat.chunks.length)throw new Error('No usable sentences found. Put each section under a heading like "## Chapter 3, Section 1", then analyze again.');
+    mat.format=(S.material&&S.material.format)||'text';
+    S.material=mat;
+    const mapped=mat.map.filter(m=>m.mapped).length;
+    const ready=QUESTIONS.filter(q=>{const m=mat.map.find(x=>x.id===q.topic);return m&&m.mapped;}).length;
+    S.analysis={ok:true,at:Date.now(),ms:Math.max(1,Date.now()-t0),chunks:mat.chunks.length,
+      topics:mapped,words:mat.words,questions:ready,name:mat.name,format:mat.format};
+    persist(); setBusy(false); render();
+    toast(`Analyzed: ${mat.chunks.length} chunks · ${mapped}/6 topics · ${ready} questions ready`);
+    const box=$('#analysisResult');
+    if(box&&box.scrollIntoView)box.scrollIntoView({behavior:'smooth',block:'center'});
+  }catch(e){
+    S.analysis={ok:false,at:Date.now(),msg:e.message||'Could not analyze that material.'};
+    setBusy(false); render();
+    toast('Analyze failed - the reason is in the red panel.');
+    const box=$('#analysisResult');
+    if(box&&box.scrollIntoView)box.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+function setBusy(on){
+  document.querySelectorAll('[data-action="analyze"]').forEach(b=>{
+    if(on){b.dataset.label=b.innerHTML;b.disabled=true;b.innerHTML='<span class="spin"></span>Analyzing...';}
+    else{b.disabled=false;if(b.dataset.label)b.innerHTML=b.dataset.label;}
+  });
+}
+
+/* ================= quiz ================= */
+let timerId=null;
+const mmss=s=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.max(0,s%60)).padStart(2,'0')}`;
+function startQuiz(){
+  ensureMaterial();
+  if(!S.material||S.material.chunks.length<3){toast('Load material first.');go('upload');return;}
+  S.draft={i:0,answers:Array(QUESTIONS.length).fill(null),start:Date.now(),left:600};
+  go('quiz');
+}
+function stopTimer(){if(timerId){clearInterval(timerId);timerId=null;}}
+function startTimer(){
+  stopTimer();
+  const el=$('#timer'); if(el&&S.draft)el.textContent=mmss(S.draft.left);
+  timerId=setInterval(()=>{
+    const d=S.draft; const t=$('#timer');
+    if(!d||!t){stopTimer();return;}
+    d.left--;
+    t.textContent=mmss(d.left);
+    t.classList.toggle('low',d.left<=60);
+    if(d.left<=0){stopTimer();toast('Time is up - submitting.');finishQuiz();}
+  },1000);
+}
+function quizPage(){
+  ensureMaterial();
+  if(!S.draft)S.draft={i:0,answers:Array(QUESTIONS.length).fill(null),start:Date.now(),left:600};
+  const d=S.draft, q=QUESTIONS[d.i], r=gapRows(latest()).find(x=>x.id===q.topic);
+  const picked=d.answers[d.i];
+  const letters=['A','B','C','D'];
+  return `<div class="q-wrap">
+    <div class="q-top">
+      <span class="pill plain">Attempt ${S.attempts.length+1} of ${Math.max(S.attempts.length+1,2)}</span>
+      <span class="chip">${ico('doc',12)} ${esc(q.citation)}</span>
+      <span class="pill ${q.topic==='photo'||q.topic==='resp'?'hi':'md'}">weight ${Math.round((r?r.weight:.15)*100)}%</span>
+      <span class="timer" id="timer" style="margin-left:auto">${mmss(d.left)}</span>
+    </div>
+    <div class="row" style="margin-bottom:14px;gap:10px">
+      <div class="bar"><i style="width:${Math.round((d.i+1)/QUESTIONS.length*100)}%"></i></div>
+      <span class="tiny mut mono">${d.i+1}/${QUESTIONS.length}</span>
+    </div>
+    <div class="q-card">
+      <div class="between"><span class="q-num">Question ${d.i+1} · ${esc(topicById(q.topic).name)}</span>
+        ${heatPill(topicById(q.topic).weight)}</div>
+      <div class="q-text">${esc(q.q)}</div>
+      <div class="opts">${q.options.map((o,i)=>`
+        <button class="opt${picked===i?' sel':''}" data-action="pick" data-i="${i}" aria-pressed="${picked===i}">
+          <span class="k">${letters[i]}</span><span>${esc(o)}</span></button>`).join('')}</div>
+      <div class="row" style="margin-top:16px;gap:7px;flex-wrap:wrap">
+        <span class="chip grey">${ico('doc',12)} Cited from ${esc(q.citation)}</span>
+        <span class="tiny mut">Retrieved before the question was written.</span>
+      </div>
+      <div class="q-nav" style="flex-wrap:wrap">
+        <button class="btn btn-ghost" data-action="q-prev" ${d.i===0?'disabled':''}>Back</button>
+        ${d.i<QUESTIONS.length-1
+          ?`<button class="btn" data-action="q-next">Next ${ico('arrow',15)}</button>`
+          :`<button class="btn" data-action="try-submit">${ico('check',15)} Submit attempt</button>`}
+        <button class="btn btn-ghost btn-sm" data-action="try-submit" style="margin-left:auto">Submit early</button>
+      </div>
+    </div>
+    <div class="row" style="margin-top:14px;gap:6px;flex-wrap:wrap">
+      ${QUESTIONS.map((_,i)=>`<button class="q-dots-btn" data-action="q-jump" data-i="${i}"
+        style="width:26px;height:26px;border-radius:7px;font-size:11px;font-weight:800;border:1px solid ${i===d.i?'var(--indigo)':d.answers[i]!==null?'#C7D2FE':'var(--line)'};background:${i===d.i?'var(--indigo)':d.answers[i]!==null?'var(--indigo-50)':'var(--soft)'};color:${i===d.i?'#fff':d.answers[i]!==null?'var(--indigo-800)':'var(--muted)'}">${i+1}</button>`).join('')}
+      <span class="tiny mut" style="margin-left:auto">${d.answers.filter(x=>x!==null).length}/${QUESTIONS.length} answered</span>
+    </div>
+    <p class="tiny mut" style="margin-top:14px;text-align:center">No hints here - the diagnostic exists to find the gaps, not to flatter you. Answers are scored in one pass at submit.</p>
+  </div>`;
+}
+function trySubmit(){
+  const d=S.draft; if(!d)return;
+  const un=d.answers.filter(x=>x===null).length;
+  if(!un)return finishQuiz();
+  modal(`<h3>Submit with ${un} unanswered?</h3>
+    <p class="small mut" style="margin-top:6px">Unanswered questions are scored as wrong, so the gap report may look harsher than your real level.</p>
+    <div class="btn-row" style="margin-top:18px">
+      <button class="btn btn-ghost" data-action="close-modal">Keep going</button>
+      <button class="btn" data-action="finish-quiz">Submit anyway</button></div>`);
+}
+function finishQuiz(){
+  const d=S.draft; if(!d)return;
+  closeModal(); stopTimer();
+  const answers=d.answers.map(a=>a===null?-1:a);
+  const sec=Math.max(5,Math.round((Date.now()-d.start)/1000));
+  const att=makeAttempt(answers,sec);
+  S.attempts.push(att);
+  S.minutes+=Math.max(1,Math.round(sec/60));
+  S.draft=null;
+  touchDay(); persist();
+  S.page='report'; render();
+  toast(`Attempt ${att.n} scored - ${att.acc}% mastery, ${gapRows(att).filter(r=>r.band==='weak').length} weak topics`);
+}
+
+/* ================= gap report ================= */
+function reportPage(){
+  const a=latest();
+  if(!a)return `<div class="page-head"><div><div class="eyebrow">Diagnosis</div><h1>Gap report</h1></div></div>
+    <div class="card"><div class="empty" style="border:0;background:transparent">
+      <div style="max-width:420px;margin:0 auto"><b style="display:block;font-size:15px;color:var(--ink);margin-bottom:6px">No attempt to diagnose yet</b>
+      The gap report is generated from your answers, so it needs one 10-question attempt first. It takes about five minutes and every question is cited.
+      <div class="btn-row" style="justify-content:center;margin-top:16px"><button class="btn" data-action="start-quiz">Start diagnostic</button></div></div>
+    </div></div>`;
+  const rows=gapRows(a);
+  const weak=rows.filter(r=>r.band==='weak'), med=rows.filter(r=>r.band==='med'),
+    strong=rows.filter(r=>r.band==='strong'), untested=rows.filter(r=>r.band==='untested');
+  const missed=QUESTIONS.map((q,i)=>({q,i})).filter(x=>a.answers[x.i]!==x.q.answer);
+  const top=rows.filter(r=>r.band==='weak')[0]||rows[0];
+  return `
+  <div class="page-head">
+    <div><div class="eyebrow">Gap Report · Attempt ${a.n} · ${fmtDate(a.at)}</div>
+      <h1>${a.acc}% mastery. ${weak.length?`${weak.length} topic${weak.length===1?'':'s'} need work.`:'No weak topics left.'}</h1>
+      <p class="small mut" style="margin-top:6px">${a.correct} of ${a.total} correct in ${fmtMins(Math.round(a.sec/60))} · sorted by Priority Score.</p></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" data-action="dl-menu" data-kind="report">${ico('download',15)} Download PDF / Word</button>
+      <button class="btn btn-ghost" data-action="go" data-page="plan">${ico('plan',15)} Plan</button>
+      <button class="btn" data-action="start-quiz">${ico('quiz',15)} Re-test</button>
+    </div>
+  </div>
+
+  <div class="report-hero">
+    <div class="ring" style="--v:${a.acc}"><div class="ring-in"><b>${a.acc}%</b><span>Mastery</span></div></div>
+    <div>
+      <div class="eyebrow">What this means</div>
+      <div class="verdict">${esc(top.why)}</div>
+      <div class="band">
+        <span class="band-i"><i style="background:var(--red)"></i>${weak.length} weak</span>
+        <span class="band-i"><i style="background:var(--amber)"></i>${med.length} medium</span>
+        <span class="band-i"><i style="background:var(--green)"></i>${strong.length} strong</span>
+        ${untested.length?`<span class="band-i"><i style="background:var(--muted-2)"></i>${untested.length} untested</span>`:''}
+      </div>
+      <p class="tiny mut" style="margin-top:10px">Priority Score = (100 - Accuracy) x Exam Weight. Weak topics with high exam weight rise to the top of the plan.</p>
+    </div>
+    <div style="text-align:right">
+      <div class="tiny mut">Biggest gap</div>
+      <div class="b" style="font-size:15px">${esc(top.name)}</div>
+      <div class="b" style="font-size:26px;letter-spacing:-.03em;color:var(--red)">${top.priority}</div>
+      <div class="tiny mut">priority score</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><h2>Gaps by band</h2><span class="tiny mut">Weak under 50% · Medium 50-79% · Strong 80%+</span></div>
+    <div class="gap-cols">
+      ${bandColumn('Weak','Fix these first','weak',weak)}
+      ${bandColumn('Medium','Half-solid, half luck','med',med)}
+      ${bandColumn('Strong','Keep them warm','strong',strong.concat(untested))}
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><h2>Full topic breakdown</h2><span class="tiny mut">Heatmap column is exam weight, not difficulty</span></div>
+    <div class="card pad0"><div class="tbl-scroll"><table class="tbl">
+      <thead><tr><th>Topic</th><th style="width:170px">Accuracy</th><th>Exam weight</th><th>Band</th><th class="right">Priority</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr>
+        <td><div class="b" style="font-size:13.5px">${esc(r.name)}</div><div class="tiny mut">${esc(r.chapter)}</div></td>
+        <td><div class="row" style="gap:8px"><div class="bar ${r.band==='weak'?'r':r.band==='med'?'a':r.band==='strong'?'g':''}"><i style="width:${r.acc}%"></i></div>
+          <span class="tiny mono b" style="width:34px">${r.tested?r.acc+'%':'-'}</span></div>
+          <div class="tiny mut">${r.tested?`${r.correct} of ${r.total} correct`:'not in this attempt'}</div></td>
+        <td>${heatPill(r.weight)}</td>
+        <td>${bandPill(r.band)}</td>
+        <td class="num right b">${r.tested?r.priority:'-'}</td></tr>`).join('')}</tbody>
+    </table></div></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><h2>Why these answers went wrong</h2><span class="tiny mut">${missed.length} missed</span></div>
+    <div class="grid g2">${missed.length?missed.map(({q,i})=>`
+      <div class="miss">
+        <div class="row" style="justify-content:space-between;gap:8px;margin-bottom:6px">
+          <span class="chip">${ico('doc',12)} ${esc(q.citation)}</span>
+          <span class="pill weak">${esc(topicById(q.topic).name)}</span></div>
+        <div class="miss-q">${esc(q.q)}</div>
+        <div class="miss-a"><span>Your answer: <s>${a.answers[i]<0?'skipped':esc(q.options[a.answers[i]])}</s></span>
+          <span>Correct: <em>${esc(q.options[q.answer])}</em></span></div>
+        <div class="miss-why">${esc(q.why)}</div>
+      </div>`).join(''):`<div class="empty" style="grid-column:1/-1">Every question correct. Move the sliders in the plan to keep the material warm.</div>`}</div>
+  </div>
+
+  <div class="card" style="margin-top:24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+    <div style="flex:1;min-width:240px"><div class="b" style="font-size:15px">Diagnosis done. Now the plan.</div>
+      <div class="small mut" style="margin-top:3px">${esc(top.name)} leads because it is ${top.acc}% accurate at ${Math.round(top.weight*100)}% exam weight. The schedule below starts there.</div></div>
+    <button class="btn" data-action="go" data-page="plan">Build revision plan ${ico('arrow',15)}</button>
+  </div>`;
+}
+function bandColumn(title,sub,band,list){
+  return `<div class="stack" style="gap:10px">
+    <div class="row" style="justify-content:space-between"><div class="row" style="gap:7px">${bandPill(band)}<span class="tiny mut">${sub}</span></div>
+      <span class="tiny b mut">${list.length}</span></div>
+    ${list.length?list.map(r=>`<div class="tc ${r.band}">
+      <div class="tc-h"><div><div class="tc-n">${esc(r.name)}</div>
+        <div class="tc-sc">${r.tested?`${r.correct}/${r.total} correct · ${r.acc}%`:'not tested'}</div></div></div>
+      <div class="tc-why">${esc(r.why)}</div>
+      <div class="tc-pr"><span>${r.tested?`(100-${r.acc}) x ${r.weight.toFixed(2)}`:'no data'}</span><b>${r.tested?r.priority:'-'}</b></div>
+      <div class="row" style="gap:6px">${heatPill(r.weight)}
+        <button class="btn btn-ghost btn-sm" data-action="explain-topic" data-topic="${r.id}">Explain</button></div>
+    </div>`).join(''):`<div class="empty" style="padding:16px;font-size:12px">Nothing in this band.</div>`}
+  </div>`;
+}
+function reportText(){
+  const a=latest(); if(!a)return 'No attempt yet.';
+  const rows=gapRows(a);
+  const lines=[
+    'GAPFINDER AI - GAP REPORT','='.repeat(46),
+    `Generated: ${new Date().toLocaleString()}`,
+    `Student: ${S.user?S.user.name:'-'}`,
+    `Attempt ${a.n} · ${fmtDate(a.at)} · ${a.acc}% mastery (${a.correct}/${a.total})`,
+    `Material: ${S.material?S.material.name:'-'} (${S.material?S.material.chunks.length:0} chunks)`,
+    '','TOPIC BREAKDOWN (sorted by priority)','-'.repeat(46)
+  ];
+  rows.forEach(r=>{
+    lines.push(`${r.name} | ${r.tested?r.acc+'% ('+r.correct+'/'+r.total+')':'untested'} | weight ${Math.round(r.weight*100)}% | priority ${r.tested?r.priority:'-'}`);
+    lines.push(`  why: ${r.why}`);
+  });
+  lines.push('','PRIORITY FORMULA','-'.repeat(46),'Priority Score = (100 - Accuracy) x Exam Weight');
+  lines.push('','MISSED QUESTIONS','-'.repeat(46));
+  QUESTIONS.forEach((q,i)=>{
+    if(a.answers[i]===q.answer)return;
+    lines.push(`- [${q.citation}] ${q.q}`);
+    lines.push(`  your answer: ${a.answers[i]<0?'skipped':q.options[a.answers[i]]}`);
+    lines.push(`  correct: ${q.options[q.answer]}`);
+    lines.push(`  reason: ${q.why}`);
+  });
+  lines.push('','Every answer above is generated from chunks of the uploaded material. No outside knowledge.');
+  return lines.join('\n');
+}
+
+/* ================= revision plan ================= */
+function planStatsHTML(){
+  const p=planSessions();
+  const hours=(p.totalMin/60).toFixed(1);
+  return `<div class="grid g2" style="gap:10px">
+    <div class="tile" style="padding:11px"><div class="tile-l">Total</div><div class="tile-v" style="font-size:20px">${hours}h</div></div>
+    <div class="tile" style="padding:11px"><div class="tile-l">Sessions</div><div class="tile-v" style="font-size:20px">${p.sessions.length}</div></div>
+    <div class="tile" style="padding:11px"><div class="tile-l">Topics</div><div class="tile-v" style="font-size:20px">${new Set(p.sessions.map(s=>s.topic.id)).size}</div></div>
+    <div class="tile" style="padding:11px"><div class="tile-l">Re-test</div><div class="tile-v" style="font-size:20px">Day ${p.days}</div></div>
+  </div>`;
+}
+function planListHTML(){
+  const p=planSessions();
+  return Object.keys(p.grouped).map(d=>{
+    const list=p.grouped[d];
+    const mins=list.reduce((s,x)=>s+x.mins,0);
+    return `<div class="day">
+      <div class="day-h"><b>Day ${d}</b><span>${fmtMins(mins)} · ${list.length} session${list.length>1?'s':''}</span></div>
+      ${list.map((s,i)=>`<div class="sess${s.kind==='retest'?' retest':''}">
+        <span class="sess-n">${s.kind==='retest'?'R':i+1}</span>
+        <div class="sess-b">
+          <div class="sess-t">${esc(s.topic.name)} ${bandPill(s.topic.band)}
+            ${s.kind==='retest'?'<span class="pill plain">re-test</span>':''}</div>
+          <div class="sess-f">${esc(s.focus)}</div>
+          <div class="row" style="gap:6px;margin-top:6px;flex-wrap:wrap">
+            <span class="chip">${ico('doc',12)} ${esc(s.citation)}</span>
+            <button class="btn btn-ghost btn-sm" data-action="explain-topic" data-topic="${s.topic.id}">Ask the material</button></div>
+        </div>
+        <span class="sess-x">${s.mins} min</span>
+      </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+function planPage(){
+  const p=planSessions();
+  const a=latest();
+  return `
+  <div class="page-head">
+    <div><div class="eyebrow">Step 4 · Revision plan</div><h1>What to study, in what order</h1>
+      <p class="small mut" style="margin-top:6px;max-width:560px">Sessions are ranked by Priority Score, so the weakest high-weight topic always comes first.</p></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" data-action="dl-menu" data-kind="plan">${ico('download',15)} Download PDF / Word</button>
+      <button class="btn" data-action="start-quiz">${ico('quiz',15)} Re-test</button>
+    </div>
+  </div>
+
+  ${S.attempts.length>=2?`<div class="banner info" style="margin-bottom:16px">${ico('check',15)}
+    <div><b>Plan updated after Attempt ${S.attempts.length}.</b> ${esc(gapRows(a)[0].name)} is now first: ${gapRows(a)[0].acc}% accuracy at ${Math.round(gapRows(a)[0].weight*100)}% exam weight, priority ${gapRows(a)[0].priority}.</div></div>`
+  :`<div class="banner" style="margin-bottom:16px">${ico('report',15)}
+    <div><b>This plan is built from attempt ${S.attempts.length||0}.</b> Take a second attempt and the ordering updates itself - weak topics rise, recovered topics drop.</div></div>`}
+
+  <div class="plan-grid">
+    <div class="card">
+      <h2 style="margin-bottom:14px">Plan controls</h2>
+      <div class="slider-row">
+        <div class="slider-head"><b>Days available</b><span id="slider-days">${p.days}</span></div>
+        <input type="range" min="1" max="14" step="1" value="${p.days}" data-slider="days" aria-label="Days available">
+        <div class="row" style="justify-content:space-between"><span class="tiny mut">1 day</span><span class="tiny mut">14 days</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-head"><b>Hours per day</b><span id="slider-hours">${p.hours}h</span></div>
+        <input type="range" min="1" max="4" step="1" value="${p.hours}" data-slider="hours" aria-label="Hours per day">
+        <div class="row" style="justify-content:space-between"><span class="tiny mut">1 hour</span><span class="tiny mut">4 hours</span></div>
+      </div>
+      <div id="planStats">${planStatsHTML()}</div>
+      <div class="banner info" style="margin-top:14px;font-size:12px">${ico('target',15)}
+        <div>Order: priority descending. Priority = (100 - accuracy) x exam weight.</div></div>
+      <div class="btn-row" style="margin-top:14px">
+        <button class="btn btn-block" data-action="download-plan">${ico('download',15)} Download Plan as Text</button>
+      </div>
+    </div>
+    <div id="planList">${planListHTML()}</div>
+  </div>`;
+}
+function planText(){
+  const p=planSessions(); const a=latest();
+  const L=['GAPFINDER AI - REVISION PLAN','='.repeat(48),
+    'Generated: '+new Date().toLocaleString(),
+    'Student: '+(S.user?S.user.name:'-'),
+    `Days: ${p.days}  |  Hours/day: ${p.hours}  |  Total: ${fmtMins(p.totalMin)}`,
+    a?`Built from Attempt ${a.n}: ${a.acc}% mastery (${a.correct}/${a.total})`:'Built before any attempt',
+    'Sorted by Priority Score = (100 - Accuracy) x Exam Weight',''];
+  L.push('PRIORITY ORDER','-'.repeat(48));
+  p.rows.forEach((r,i)=>L.push(`${i+1}. ${r.name} - ${r.tested?r.acc+'%':'untested'} - weight ${Math.round(r.weight*100)}% - priority ${r.tested?r.priority:'-'}`));
+  L.push('','DAY BY DAY','-'.repeat(48));
+  Object.keys(p.grouped).forEach(d=>{
+    const list=p.grouped[d];
+    L.push('',`DAY ${d}  (${fmtMins(list.reduce((s,x)=>s+x.mins,0))})`);
+    list.forEach((s,i)=>{
+      L.push(`  ${i+1}. [${s.mins} min] ${s.topic.name}${s.kind==='retest'?' - RE-TEST':''}`);
+      L.push(`     source: ${s.citation}`);
+      L.push(`     task: ${s.focus}`);
+    });
+  });
+  L.push('','HOW THIS PLAN REBUILDS','-'.repeat(48),
+    'After the re-test, GapFinder recalculates accuracy per topic and re-sorts by priority.',
+    'Recovered topics drop down; new weak topics with high exam weight move to day 1.','',
+    'Every task cites a chunk from the uploaded material. No outside knowledge.');
+  return L.join('\n');
+}
+
+/* ================= explain (RAG) ================= */
+function explainPage(){
+  const first=S.material&&S.material.chunks[0];
+  const n=S.material?S.material.chunks.length:0;
+  return `
+  <div class="page-head">
+    <div><div class="eyebrow">Grounded answers</div><h1>Explain this topic</h1>
+      <p class="small mut" style="margin-top:6px;max-width:560px">Retrieval runs first, then the answer is written only from what was retrieved. If nothing is retrieved, you get that answer too.</p></div>
+    <div class="btn-row"><button class="btn btn-ghost" data-action="go" data-page="upload">${ico('upload',15)} Review material</button></div>
+  </div>
+  <div class="ex-grid">
+    <section class="card chat-card">
+      <div class="chat-h">
+        <div class="row" style="gap:10px">
+          <span class="avatar" style="width:26px;height:26px;border-radius:8px;font-size:12px">G</span>
+          <div><div style="font-size:13.5px;font-weight:750;line-height:1.15">Study chat</div>
+            <span class="tiny mut">${n} chunk${n===1?'':'s'} in index · ${S.groq?'Groq connected':'local mode'}</span></div>
+        </div>
+        ${S.chat.length?`<button class="btn btn-ghost btn-sm" data-action="clear-chat">Clear chat</button>`:''}
+      </div>
+      <div class="msgs" id="msgs">${S.chat.length?S.chat.map(msgHTML).join(''):welcomeMsg()}</div>
+      <div class="sugg">
+        ${['Why do leaves appear green?','Where do the light reactions happen?','What does a negative discriminant mean?','What is the angle of reflection?','Who won the 2018 World Cup?'].map(q=>`<button data-action="ask-sugg" data-q="${esc(q)}">${esc(q)}</button>`).join('')}
+      </div>
+      <form class="composer" id="chatForm">
+        <input class="input" id="chatInput" placeholder="Ask anything about your material..." autocomplete="off" aria-label="Question">
+        <button class="btn" type="submit" aria-label="Send">${ico('arrow',16)} Send</button>
+      </form>
+    </section>
+    <aside class="stack">
+      <div class="card">
+        <h2 style="margin-bottom:6px;font-size:14px">How an answer is built</h2>
+        <div class="stack" style="gap:7px;margin-top:8px">
+          <div class="row" style="gap:8px"><span class="pill hi">1</span><span class="tiny">Retrieve up to 2 chunks by term overlap</span></div>
+          <div class="row" style="gap:8px"><span class="pill hi">2</span><span class="tiny">Generate only from those chunks</span></div>
+          <div class="row" style="gap:8px"><span class="pill hi">3</span><span class="tiny">Attach the citation for the chunk</span></div>
+        </div>
+        <div class="divider"></div>
+        <div class="row" style="justify-content:space-between"><span class="tiny b">Groq (optional)</span>
+          <span class="pill ${S.groq?'strong':'untested'}">${S.groq?'connected':'local mode'}</span></div>
+        <p class="tiny mut" style="margin-top:6px;line-height:1.5">Local extractive mode is offline and instant. Add a Groq key to rewrite the retrieved chunk into a shorter answer - the chunks still stay the only source.</p>
+        <div class="row" style="margin-top:8px;gap:6px">
+          <input class="input" id="groqKey" type="password" placeholder="gsk_..." value="${S.groq?esc(S.groq):''}" style="height:34px;font-size:12px">
+          <button class="btn btn-sm" data-action="save-groq">${S.groq?'Update':'Save'}</button>
+        </div>
+        ${S.groq?`<button class="btn btn-ghost btn-sm btn-block" style="margin-top:6px" data-action="clear-groq">Remove key</button>`:''}
+      </div>
+      <div class="card">
+        <h2 style="margin-bottom:6px;font-size:14px">Sample chunk</h2>
+        <p class="tiny mut" style="line-height:1.5">${first?esc(first.body.slice(0,180))+'...':'Load material to see chunks.'}</p>
+        <div class="cite-row"><span class="chip">${ico('doc',12)} ${first?esc(first.heading):'-'}</span></div>
+      </div>
+    </aside>
+  </div>`;
+}
+function welcomeMsg(){
+  const n=S.material?S.material.chunks.length:0;
+  return `<div class="msg b"><div class="bub wcard">
+    <div class="w-ic">${ico('spark',20)}</div>
+    <h3>Ask your material</h3>
+    <p>${n?'I will retrieve the best-matching chunk, show it to you, then answer only from it - with the citation attached. If nothing matches, I say so instead of guessing.':'Load material on the Upload page first, then ask anything about it. I answer only from your own chunks.'}</p>
+    <div class="retr-m"><span class="chip">${ico('doc',12)} ${n} chunk${n===1?'':'s'} searchable</span><span class="chip grey">stays on this device</span></div>
+  </div></div>`;
+}
+function msgHTML(m){
+  if(m.role==='u')return `<div class="msg u"><div class="bub">${esc(m.text)}</div></div>`;
+  const av=`<div class="avatar">G</div>`;
+  if(m.pending)return `<div class="msg b">${av}<div class="bub"><div class="answer">
+    <p class="mut typing"><i></i><i></i><i></i> retrieving chunks...</p></div></div></div>`;
+  if(m.notFound)return `<div class="msg b">${av}<div class="bub">
+    <div class="retr"><div class="step-h">${ico('x',12)} 1 · retrieval</div>
+      <div class="retr-t" style="color:var(--red);background:var(--red-bg);border-color:var(--red-line)">No chunk passed the retrieval threshold for this question.</div></div>
+    <div class="answer"><div class="step-h">${ico('spark',12)} 2 · generation</div>
+      <p><b>Not in your uploaded material.</b> I only answer from the ${S.material?S.material.chunks.length:0} chunks you uploaded, so I will not guess at this one. Try rewording the question, or check the topic map on the Upload page.</p>
+      <div class="cite-row"><span class="chip grey">${ico('doc',12)} no citation available</span></div></div></div></div>`;
+  return `<div class="msg b">${av}<div class="bub">
+    <details class="retr">
+      <summary>${ico('doc',12)} 1 · Retrieved chunk ${m.chunk.id} · score ${m.chunk.score}<span class="arr">${ico('arrow',12)}</span></summary>
+      <div class="retr-t">${esc(m.chunk.text)}</div>
+      <div class="retr-m"><span class="chip">${ico('doc',12)} ${esc(m.chunk.citation)}</span>
+        ${m.related?`<span class="chip grey">also used ${esc(m.related)}</span>`:''}</div>
+    </details>
+    <div class="answer"><div class="step-h">${ico('spark',12)} 2 · answer, from that chunk only${m.engine==='groq'?' · via Groq':''}</div>
+      <p>${esc(m.answer)}</p>
+      <div class="cite-row"><span class="chip">${ico('doc',12)} 3 · citation: ${esc(m.cite)}</span></div></div></div></div>`;
+}
+function renderChat(){
+  const box=$('#msgs'); if(!box)return;
+  box.innerHTML=S.chat.length?S.chat.map(msgHTML).join(''):welcomeMsg();
+  box.scrollTop=box.scrollHeight;
+}
+async function askGroq(hits,question){
+  const ctx=hits.map(h=>`[chunk ${h.id} | ${h.heading}${h.title?' - '+h.title:''}]\n${h.body}`).join('\n\n');
+  const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.groq},
+    body:JSON.stringify({model:'llama-3.3-70b-versatile',temperature:0.1,max_tokens:260,messages:[
+      {role:'system',content:'You are a study assistant. Answer using ONLY the chunks provided. Never use outside knowledge. If the chunks do not contain the answer, reply exactly: Not in your uploaded material. Maximum three sentences.'},
+      {role:'user',content:'CHUNKS:\n'+ctx+'\n\nQUESTION: '+question}]})
+  });
+  if(!res.ok)throw new Error('groq '+res.status);
+  const j=await res.json();
+  return ((j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||'').trim();
+}
+async function ask(q){
+  const question=String(q||'').trim(); if(!question)return;
+  if(!S.material){ensureMaterial();}
+  S.chat.push({role:'u',text:question});
+  const b={role:'b',pending:true};
+  S.chat.push(b);
+  renderChat();
+  const hits=retrieve(question);
+  if(!hits.length){
+    setTimeout(()=>{Object.assign(b,{pending:false,notFound:true});renderChat();persist();},420);
+    return;
+  }
+  const top=hits[0];
+  let answer=extractAnswer(top,question), engine='local';
+  if(S.groq){
+    try{
+      const g=await askGroq(hits.slice(0,2),question);
+      if(g){
+        if(/^not in your uploaded material/i.test(g)){ Object.assign(b,{pending:false,notFound:true}); renderChat(); persist(); return; }
+        answer=g; engine='groq';
+      }
+    }catch(e){toast('Groq request failed - used local extractive answer.');}
+  }
+  Object.assign(b,{pending:false,engine,
+    chunk:{id:top.id,text:top.body,score:top.score,citation:top.heading+(top.title?' — '+top.title:'')},
+    cite:top.heading+(top.title?' — '+top.title:''),answer,
+    related:hits[1]?hits[1].heading:null});
+  renderChat(); persist();
+}
+
+/* ================= progress ================= */
+function progressPage(){
+  const rows=gapRows(latest());
+  const first=S.attempts[0], last=latest();
+  const best=S.attempts.reduce((b,a)=>Math.max(b,a.acc),0);
+  const totalMin=S.minutes;
+  return `
+  <div class="page-head">
+    <div><div class="eyebrow">Trend</div><h1>Progress across attempts</h1>
+      <p class="small mut" style="margin-top:6px">Same 10 questions each time, so every change is a real change in what you can answer.</p></div>
+    <div class="btn-row"><button class="btn" data-action="start-quiz">${ico('quiz',15)} Take attempt ${S.attempts.length+1}</button></div>
+  </div>
+
+  <div class="grid g4">
+    <div class="tile"><div class="tile-l">Attempts</div><div class="tile-v">${S.attempts.length}</div><div class="tile-s">${S.streak} day streak</div></div>
+    <div class="tile"><div class="tile-l">Latest</div><div class="tile-v">${last?last.acc+'%':'-'}</div><div class="tile-s">${last?`${last.correct}/${last.total} correct`:'no attempt yet'}</div></div>
+    <div class="tile"><div class="tile-l">Best</div><div class="tile-v">${best}%</div><div class="tile-s">${best>=80?'Exam-ready band':'Target is 80%'}</div></div>
+    <div class="tile"><div class="tile-l">Time studied</div><div class="tile-v">${totalMin}<small> min</small></div><div class="tile-s">across all sessions</div></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><h2>Attempts</h2>${S.attempts.length>=2?`<span class="pill strong">${last.acc-first.acc>=0?'+':''}${last.acc-first.acc} points since attempt 1</span>`:''}</div>
+    <div class="card pad0"><div class="tbl-scroll"><table class="tbl">
+      <thead><tr><th>Attempt</th><th>Date</th><th>Score</th><th>Weak</th><th>Time</th><th class="right">Detail</th></tr></thead>
+      <tbody>${S.attempts.length?S.attempts.map(a=>{
+        const wr=gapRows(a).filter(r=>r.band==='weak').length;
+        return `<tr><td class="b">#${a.n}${a.mode==='demo'?' <span class="pill plain">demo</span>':''}</td>
+          <td class="mut">${fmtDate(a.at)}</td>
+          <td><div class="row" style="gap:8px"><div class="bar" style="max-width:90px"><i style="width:${a.acc}%"></i></div><span class="b mono">${a.acc}%</span></div></td>
+          <td>${wr?`<span class="pill weak">${wr}</span>`:'<span class="pill strong">0</span>'}</td>
+          <td class="mut num">${fmtMins(Math.round(a.sec/60))}</td>
+          <td class="right"><button class="btn btn-ghost btn-sm" data-action="attempt-detail" data-id="${a.id}">Open</button></td></tr>`;
+      }).join(''):'<tr><td colspan="6" class="mut">No attempts recorded yet.</td></tr>'}</tbody>
+    </table></div></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><h2>Per-topic improvement</h2><span class="tiny mut">Attempt 1 to attempt ${S.attempts.length||1}</span></div>
+    <div class="card pad0"><div class="tbl-scroll"><table class="tbl">
+      <thead><tr><th>Topic</th><th>Attempt 1</th><th>Latest</th><th>Change</th><th style="width:150px">Trend</th></tr></thead>
+      <tbody>${rows.map(r=>{
+        const a1=first&&first.per[r.id]?Math.round(first.per[r.id].correct/first.per[r.id].total*100):null;
+        const a2=last&&last.per[r.id]?Math.round(last.per[r.id].correct/last.per[r.id].total*100):null;
+        const d=(a1!=null&&a2!=null)?a2-a1:null;
+        return `<tr><td><div class="b" style="font-size:13px">${esc(r.name)}</div>
+          <div class="tiny mut">weight ${Math.round(r.weight*100)}%</div></td>
+          <td class="num mut">${a1!=null?a1+'%':'-'}</td>
+          <td class="num b">${a2!=null?a2+'%':'-'}</td>
+          <td class="num ${d>0?'':''}" style="color:${d>0?'var(--green)':d<0?'var(--red)':'var(--muted)'};font-weight:700">${d==null?'-':(d>0?'+':'')+d}</td>
+          <td><div class="bar ${r.band==='weak'?'r':r.band==='med'?'a':'g'}"><i style="width:${a2||0}%"></i></div></td></tr>`;
+      }).join('')}</tbody>
+    </table></div></div>
+  </div>
+
+  <div class="card" style="margin-top:24px">
+    <div class="between"><div><div class="b" style="font-size:14px">Mastery per attempt</div>
+      <div class="tiny mut">Higher is better. 80% is the target band.</div></div>
+      <div class="row" style="gap:14px;align-items:flex-end;height:70px">
+        ${S.attempts.map(a=>`<div style="text-align:center">
+          <div style="width:26px;height:${Math.max(6,Math.round(a.acc*.55))}px;background:var(--indigo);border-radius:5px 5px 2px 2px"></div>
+          <div class="tiny mut" style="margin-top:4px">#${a.n}</div></div>`).join('')||'<span class="tiny mut">No data</span>'}
+      </div></div>
+  </div>`;
+}
+
+/* ================= teacher ================= */
+function teacherPage(){
+  const entries=Object.entries(CLASS_TOPIC).sort((a,b)=>a[1]-b[1]).map(([id,v])=>{
+    const t=topicById(id); return {t,v,priority:+(((100-v)*t.weight).toFixed(1))};
+  });
+  const avg=Math.round(Object.values(CLASS_TOPIC).reduce((s,v)=>s+v,0)/Object.keys(CLASS_TOPIC).length);
+  const below=entries.filter(e=>e.v<60);
+  const atRisk=CLASS_STUDENTS.filter(s=>s.m<55).sort((a,b)=>a.m-b.m);
+  return `
+  <div class="page-head">
+    <div><div class="eyebrow">Bonus · Teacher view</div><h1>Where the whole class is blind</h1>
+      <p class="small mut" style="margin-top:6px;max-width:560px">Same engine, one level up: aggregate the gap reports and the re-teach list writes itself.</p></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" data-action="dl-menu" data-kind="class">${ico('download',15)} Class report</button>
+      <button class="btn" data-action="class-plan">${ico('plan',15)} Intervention plan</button></div>
+  </div>
+
+  <div class="grid g4">
+    <div class="tile"><div class="tile-l">Class mastery</div><div class="tile-v">${avg}%</div><div class="tile-s">${CLASS_STUDENTS.length} students</div></div>
+    <div class="tile"><div class="tile-l">Weak topics</div><div class="tile-v">${below.length}<small> of 6</small></div><div class="tile-s">below 60% class accuracy</div></div>
+    <div class="tile"><div class="tile-l">At risk</div><div class="tile-v">${atRisk.length}<small> students</small></div><div class="tile-s">under 55% mastery</div></div>
+    <div class="tile"><div class="tile-l">Heaviest gap</div><div class="tile-v" style="font-size:17px">${esc(entries[0].t.name)}</div><div class="tile-s">${entries[0].v}% · weight ${Math.round(entries[0].t.weight*100)}%</div></div>
+  </div>
+
+  ${S.user&&S.user.role==='student'?`<div class="banner" style="margin-top:16px">${ico('users',15)}<div>You are signed in as a student, so this is a read-only preview of the teacher dashboard with seeded class data.</div></div>`:''}
+
+  <div class="sec">
+    <div class="sec-h"><h2>Class accuracy by topic</h2><span class="tiny mut">weakest first</span></div>
+    <div class="card">${entries.map(e=>`<div class="cls-bar">
+      <span class="nm">${esc(e.t.name)}</span>
+      <div class="bar ${e.v<60?'r':e.v<75?'a':'g'}"><i style="width:${e.v}%"></i></div>
+      <span class="v">${e.v}%</span>
+      ${e.v<60?'<span class="pill weak">re-teach</span>':e.v<75?'<span class="pill med">review</span>':'<span class="pill strong">holding</span>'}
+    </div>`).join('')}
+    <div class="banner warn" style="margin-top:14px">${ico('report',15)}
+      <div><b>${below.length} topics sit below the 60% class line.</b> ${esc(below.map(b=>b.t.name).join(', '))}. Priority for a re-teach class: ${esc(entries[0].t.name)} - it is ${entries[0].v}% accurate at ${Math.round(entries[0].t.weight*100)}% exam weight.</div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><h2>Students needing attention</h2><span class="tiny mut">mastery under 55%</span></div>
+    <div class="card pad0"><div class="tbl-scroll"><table class="tbl">
+      <thead><tr><th>Student</th><th style="width:160px">Mastery</th><th>Weakest topic</th><th>Suggested action</th></tr></thead>
+      <tbody>${atRisk.map(s=>`<tr>
+        <td><div class="row" style="gap:9px"><span class="avatar" style="width:26px;height:26px;font-size:10px">${esc(s.n.split(' ').map(x=>x[0]).join(''))}</span><span class="b" style="font-size:13px">${esc(s.n)}</span></div></td>
+        <td><div class="row" style="gap:8px"><div class="bar r"><i style="width:${s.m}%"></i></div><span class="tiny b">${s.m}%</span></div></td>
+        <td><span class="pill weak">${esc(topicById(s.w).name)}</span></td>
+        <td class="tiny mut">Re-run the ${esc(topicById(s.w).chapter)} plan for this student</td></tr>`).join('')}
+      </tbody>
+    </table></div></div>
+  </div>
+
+  <div class="sec">
+    <div class="card">
+      <div class="between"><div><h2>Suggested intervention order</h2>
+        <p class="tiny mut" style="margin-top:4px">Same priority formula, run on class averages instead of one student.</p></div>
+        <button class="btn btn-ghost btn-sm" data-action="class-plan">${ico('plan',14)} Open plan</button></div>
+      <div class="stack" style="margin-top:14px;gap:10px">
+        ${below.map((e,i)=>`<div class="sess" style="border:1px solid var(--line);border-radius:12px;padding:11px 13px">
+          <span class="sess-n">${i+1}</span>
+          <div class="sess-b"><div class="sess-t">${esc(e.t.name)} <span class="pill plain">${Math.ceil((60-e.v)/12)} day re-teach</span></div>
+            <div class="sess-f">${esc(e.t.chapter)} · class accuracy ${e.v}% · priority ${e.priority}. Pair strong students with the at-risk list above.</div></div>
+          <span class="sess-x">${e.v}%</span></div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+function classText(){
+  const entries=Object.entries(CLASS_TOPIC).sort((a,b)=>a[1]-b[1]);
+  const L=['GAPFINDER AI - CLASS GAP REPORT','='.repeat(48),
+    'Generated: '+new Date().toLocaleString(),'Class: Grade 10 Science · 12 students','','CLASS ACCURACY BY TOPIC','-'.repeat(48)];
+  entries.forEach(([id,v])=>{
+    const t=topicById(id);
+    L.push(`${t.name}: ${v}% | exam weight ${Math.round(t.weight*100)}% | priority ${((100-v)*t.weight).toFixed(1)} -> ${v<60?'RE-TEACH':'on track'}`);
+  });
+  L.push('','STUDENTS UNDER 55%','-'.repeat(48));
+  CLASS_STUDENTS.filter(s=>s.m<55).sort((a,b)=>a.m-b.m).forEach(s=>L.push(`${s.n}: ${s.m}% | weakest: ${topicById(s.w).name}`));
+  L.push('','SUGGESTED RE-TEACH ORDER','-'.repeat(48));
+  entries.filter(([,v])=>v<60).forEach(([id,v],i)=>L.push(`${i+1}. ${topicById(id).name} - ${topicById(id).chapter} - ${Math.ceil((60-v)/12)} day(s)`));
+  L.push('','Class priorities use the same formula as student priorities: (100 - accuracy) x exam weight.');
+  return L.join('\n');
+}
+
+/* ================= judge demo ================= */
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function runJudgeDemo(){
+  const ov=$('#demoOv'), box=$('#demoSteps'), bar=$('#demoBar');
+  const steps=['Loading sample material','Indexing 18 chunks for retrieval','Mapping 6 topics to exam weight',
+    'Auto-answering attempt 1 (weaker)','Auto-answering attempt 2 (re-test)','Scoring gaps and rebuilding the plan'];
+  box.innerHTML=steps.map((s,i)=>`<div class="demo-step" data-i="${i}"><span class="bx"></span><span>${s}</span></div>`).join('');
+  bar.style.width='0%'; ov.classList.add('on');
+  const mark=(i,c)=>{const n=box.querySelector(`[data-i="${i}"]`); if(n)n.className='demo-step '+c;};
+  mark(0,'act'); bar.style.width='8%'; await sleep(380);
+  closeModal();
+  S.user={name:'Demo Student',email:'demo@student.com',role:'student'};
+  S.material=parseMaterial(SAMPLE_TEXT,'Sample study material');
+  S.attempts=[]; S.chat=[]; S.plan={days:5,hours:2};
+  mark(0,'done'); mark(1,'act'); bar.style.width='28%'; await sleep(400);
+  mark(1,'done'); mark(2,'act'); bar.style.width='48%'; await sleep(380);
+  const att1=makeAttempt(QUESTIONS.map(q=>DEMO_A1[q.id]),372,'demo');
+  att1.at=Date.now()-3*86400000;
+  mark(2,'done'); mark(3,'act'); bar.style.width='64%'; await sleep(460);
+  S.attempts.push(att1);
+  mark(3,'done'); mark(4,'act'); bar.style.width='82%'; await sleep(460);
+  const att2=makeAttempt(QUESTIONS.map(q=>DEMO_A2[q.id]),294,'demo');
+  S.attempts.push(att2);
+  mark(4,'done'); mark(5,'act'); bar.style.width='94%'; await sleep(420);
+  S.streak=5; S.lastActive=todayKey(); S.minutes=Math.round((372+294)/60)+14;
+  persist();
+  mark(5,'done'); bar.style.width='100%'; await sleep(300);
+  ov.classList.remove('on');
+  S.page='report'; render(); window.scrollTo(0,0);
+  setTimeout(()=>toast('Demo done: 40% mastery, 3 weak topics, plan rebuilt after attempt 2'),420);
+}
+
+/* ================= attempt detail modal ================= */
+function attemptDetail(id){
+  const a=S.attempts.find(x=>x.id===id); if(!a)return;
+  const rows=gapRows(a);
+  modal(`<div class="between" style="margin-bottom:4px"><h3 style="margin:0">Attempt #${a.n}</h3>
+      <span class="pill plain">${fmtDate(a.at)}</span></div>
+    <p class="small mut" style="margin-top:4px">${a.correct}/${a.total} correct · ${a.acc}% · ${fmtMins(Math.round(a.sec/60))}${a.mode==='demo'?' · demo answers':''}</p>
+    <div class="stack" style="margin-top:12px;gap:8px">
+      ${rows.map(r=>`<div class="row" style="gap:9px"><span class="tiny b" style="width:120px">${esc(r.name)}</span>
+        <div class="bar ${r.band==='weak'?'r':r.band==='med'?'a':'g'}"><i style="width:${r.acc}%"></i></div>
+        <span class="tiny mono b" style="width:38px;text-align:right">${r.acc}%</span></div>`).join('')}
+    </div>
+    <div class="btn-row" style="margin-top:16px"><button class="btn btn-ghost" data-action="close-modal">Close</button>
+      <button class="btn" data-action="start-quiz">Re-test now</button></div>`);
+}
+
+/* ================= events ================= */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-action]');
+  if(!el)return;
+  const a=el.dataset.action;
+  if(a==='modal-bg'){ if(e.target===el)closeModal(); return; }
+  switch(a){
+    case 'go': go(el.dataset.page); break;
+    case 'toggle-nav': $('#sidebar').classList.add('open'); $('#scrim').classList.add('on'); break;
+    case 'close-nav': $('#sidebar').classList.remove('open'); $('#scrim').classList.remove('on'); break;
+    case 'logout':
+      S.user=null; S.page='login'; S.draft=null; stopTimer(); persist(); render(); toast('Signed out. Your attempts are still saved.'); break;
+    case 'judge': runJudgeDemo(); break;
+    case 'demo-student': signIn({name:'Demo Student',email:'demo@student.com',role:'student'}); break;
+    case 'fill':
+      if($('#email'))$('#email').value=el.dataset.e;
+      if($('#pass'))$('#pass').value=el.dataset.p;
+      if($('#loginErr'))$('#loginErr').innerHTML='';
+      toast('Credentials filled - press Sign in.'); break;
+    case 'start-quiz': startQuiz(); break;
+    case 'pick':{
+      const d=S.draft; if(!d)return; d.answers[d.i]=+el.dataset.i;
+      render(); break; }
+    case 'q-prev': if(S.draft&&S.draft.i>0){S.draft.i--;render();} break;
+    case 'q-next': if(S.draft&&S.draft.i<QUESTIONS.length-1){S.draft.i++;render();} break;
+    case 'q-jump': if(S.draft){S.draft.i=+el.dataset.i;render();} break;
+    case 'try-submit': trySubmit(); break;
+    case 'finish-quiz': finishQuiz(); break;
+    case 'close-modal': closeModal(); break;
+    case 'load-sample':
+      applyMaterial(SAMPLE_TEXT,'Sample study material');
+      if(S.page==='upload')render(); toast('Sample loaded: 6 topics, 18 chunks, 10 questions.'); break;
+    case 'analyze': doAnalyze(); break;
+    case 'pick-file': if($('#fileInput'))$('#fileInput').click(); break;
+    case 'toggle-chunks':{
+      const box=$('#chunkList'); if(!box)return;
+      const open=box.style.display!=='none';
+      box.style.display=open?'none':'block';
+      el.textContent=open?`Show all ${S.material.chunks.length}`:'Hide chunks'; break; }
+    case 'explain-topic':{
+      const id=el.dataset.topic; const q=QUESTIONS.find(x=>x.topic===id);
+      const rows=gapRows(latest()); const r=rows.find(x=>x.id===id);
+      const prompt=q?`Explain ${q.label} from ${q.citation}.`:`Explain ${topicById(id).name}.`;
+      go('explain');
+      setTimeout(()=>ask(prompt),90);
+      if(r&&r.tested)toast(`${r.name}: ${r.acc}% accuracy - asking the material.`);
+      break; }
+    case 'ask-sugg': ask(el.dataset.q); break;
+    case 'clear-chat': S.chat=[]; persist(); render(); toast('Chat cleared.'); break;
+    case 'save-groq':{
+      const v=$('#groqKey')?$('#groqKey').value.trim():'';
+      if(!v){toast('Paste a Groq key first.');break;}
+      S.groq=v; persist(); render(); toast('Groq connected. Answers still come only from retrieved chunks.'); break; }
+    case 'clear-groq': S.groq=''; persist(); render(); toast('Groq key removed - local extraction only.'); break;
+    case 'download-plan': exportFile('plan','txt'); break;
+    case 'download-report': exportFile('report','txt'); break;
+    case 'download-class': exportFile('class','txt'); break;
+    case 'dl-menu': dlMenu(el.dataset.kind||'report'); break;
+    case 'dl': exportFile(el.dataset.kind||'report',el.dataset.fmt||'pdf'); break;
+    case 'class-plan':{
+      const entries=Object.entries(CLASS_TOPIC).sort((a,b)=>a[1]-b[1]).filter(([,v])=>v<60);
+      modal(`<h3>Class intervention plan</h3>
+        <p class="small mut" style="margin-top:4px">Weakest class topic first, using the same priority formula.</p>
+        <div class="stack" style="margin-top:12px;gap:8px">
+          ${entries.map(([id,v],i)=>`<div class="row" style="gap:9px;align-items:flex-start">
+            <span class="rnk">${i+1}</span>
+            <div style="flex:1"><div class="small b">${esc(topicById(id).name)}</div>
+              <div class="tiny mut">${v}% class accuracy · re-teach ${Math.ceil((60-v)/12)} day(s) · ${esc(topicById(id).chapter)}</div></div></div>`).join('')}
+        </div>
+        <div class="btn-row" style="margin-top:16px"><button class="btn btn-ghost" data-action="close-modal">Close</button>
+          <button class="btn" data-action="dl-menu" data-kind="class">${ico('download',15)} Download</button></div>`);
+      break; }
+    case 'attempt-detail': attemptDetail(el.dataset.id); break;
+  }
+});
+document.addEventListener('submit',e=>{
+  if(e.target.id==='loginForm'){e.preventDefault();doLogin($('#email').value,$('#pass').value);return;}
+  if(e.target.id==='chatForm'){
+    e.preventDefault();
+    const i=$('#chatInput'); const v=i?i.value:'';
+    if(!v.trim())return; i.value=''; ask(v);
+  }
+});
+document.addEventListener('input',e=>{
+  const sl=e.target.closest('[data-slider]');
+  if(!sl)return;
+  const k=sl.dataset.slider;
+  S.plan[k]=+sl.value;
+  const lab=$('#slider-'+k);
+  if(lab)lab.textContent=k==='days'?sl.value+' day'+(sl.value==='1'?'':'s'):sl.value+'h';
+  const list=$('#planList'); if(list)list.innerHTML=planListHTML();
+  const stats=$('#planStats'); if(stats)stats.innerHTML=planStatsHTML();
+  persist();
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='fileInput'){const f=e.target.files&&e.target.files[0];if(f)readFile(f);}
+});
+function readFile(file){
+  if(!file)return;
+  importFile(file);
+}
+['dragover','dragleave','drop'].forEach(ev=>{
+  document.addEventListener(ev,e=>{
+    const z=e.target.closest&&e.target.closest('#dropZone');
+    if(!z)return;
+    e.preventDefault();
+    if(ev==='dragover'){z.classList.add('over');return;}
+    z.classList.remove('over');
+    if(ev==='drop'){
+      const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+      if(f)readFile(f);
+    }
+  });
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    closeModal();
+    $('#sidebar').classList.remove('open');
+    $('#scrim').classList.remove('on');
+  }
+});
+
+/* ================= import: pdf / docx / pptx / xlsx / rtf / csv / txt ================= */
+const FILE_KIND={txt:'text',text:'text',md:'text',markdown:'text',log:'text',csv:'csv',tsv:'csv',
+  pdf:'pdf',docx:'docx',docm:'docx',xlsx:'xlsx',xlsm:'xlsx',pptx:'pptx',pptm:'pptx',rtf:'rtf',
+  doc:'legacy',xls:'legacy',ppt:'legacy'};
+function kindOf(file){
+  const seg=String(file.name||'').toLowerCase().split('.');
+  const ext=seg.length>1?seg.pop():'';
+  if(FILE_KIND[ext])return {kind:FILE_KIND[ext],ext};
+  const t=String(file.type||'');
+  if(/pdf/.test(t))return {kind:'pdf',ext:'pdf'};
+  if(/wordprocessingml/.test(t))return {kind:'docx',ext:'docx'};
+  if(/presentationml/.test(t))return {kind:'pptx',ext:'pptx'};
+  if(/spreadsheetml/.test(t))return {kind:'xlsx',ext:'xlsx'};
+  if(/rtf/.test(t))return {kind:'rtf',ext:'rtf'};
+  if(/csv/.test(t))return {kind:'csv',ext:'csv'};
+  return {kind:'text',ext:ext||'txt'};
+}
+const baseName=n=>String(n||'material').replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim()||'material';
+const latin1=u8=>{let s='';const CH=8192;for(let i=0;i<u8.length;i+=CH)s+=String.fromCharCode.apply(null,u8.subarray(i,i+CH));return s;};
+const u8of=s=>{const u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i)&255;return u;};
+async function inflate(u8,fmt){
+  if(typeof DecompressionStream==='undefined')
+    throw new Error('This browser cannot unzip Office/PDF data. Use Chrome or Edge 103+, Safari 16.4+ or Firefox 113+.');
+  const st=new Blob([u8]).stream().pipeThrough(new DecompressionStream(fmt||'deflate'));
+  return new Uint8Array(await new Response(st).arrayBuffer());
+}
+/* PDF streams often carry a trailing EOL before "endstream", which the strict decoder rejects. */
+async function inflateLoose(u8,fmt){
+  const tries=[u8];
+  let e=u8.length;
+  for(let k=0;k<3&&e>0;k++){
+    const b=u8[e-1];
+    if(b===10||b===13||b===32||b===9||b===0){e--;tries.push(u8.subarray(0,e));}
+    else break;
+  }
+  let last=null;
+  for(const t of tries){
+    try{return await inflate(t,fmt);}catch(err){last=err;}
+  }
+  throw last||new Error('Could not decompress that stream.');
+}
+async function unzip(buf){
+  const u8=buf instanceof Uint8Array?buf:new Uint8Array(buf);
+  const dv=new DataView(u8.buffer,u8.byteOffset,u8.byteLength);
+  let eocd=-1;
+  for(let i=u8.length-22;i>=Math.max(0,u8.length-65558);i--){if(dv.getUint32(i,true)===0x06054b50){eocd=i;break;}}
+  if(eocd<0)throw new Error('That file is not a readable .docx/.xlsx package (no zip directory found). Re-save it and retry.');
+  const count=Math.min(dv.getUint16(eocd+10,true),2000);
+  let p=dv.getUint32(eocd+16,true);
+  const out={};
+  for(let i=0;i<count;i++){
+    if(p+46>u8.length||dv.getUint32(p,true)!==0x02014b50)break;
+    const method=dv.getUint16(p+10,true), csize=dv.getUint32(p+20,true);
+    const nl=dv.getUint16(p+28,true), el=dv.getUint16(p+30,true), cl=dv.getUint16(p+32,true);
+    const lho=dv.getUint32(p+42,true);
+    const name=new TextDecoder().decode(u8.subarray(p+46,p+46+nl));
+    const start=lho+30+dv.getUint16(lho+26,true)+dv.getUint16(lho+28,true);
+    out[name]={method,data:u8.subarray(start,start+csize)};
+    p+=46+nl+el+cl;
+  }
+  return out;
+}
+async function zipText(z,name){
+  const e=z[name];
+  if(!e)return '';
+  return new TextDecoder().decode(e.method===0?e.data:await inflate(e.data,'deflate-raw'));
+}
+const unxml=s=>String(s).replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'")
+  .replace(/&#(\d+);/g,(m,d)=>String.fromCharCode(+d)).replace(/&amp;/g,'&');
+function stripTags(s){
+  return unxml(String(s).replace(/<w:tab\b[^>]*\/?>/g,'\t').replace(/<w:br\b[^>]*\/?>/g,'\n').replace(/<[^>]*>/g,''))
+    .replace(/[ \t\u00a0]+/g,' ').trim();
+}
+function docxToText(xml){
+  const out=[];
+  String(xml).split('</w:p>').forEach(p=>{
+    const head=/<w:pStyle[^>]*w:val="[^"]*?(?:[Hh]eading|[Tt]itle)/.test(p);
+    const t=stripTags(p);
+    if(!t)return;
+    out.push(head?'## '+t.replace(/^#+\s*/,''):t);
+  });
+  return out.join('\n\n');
+}
+async function xlsxToText(z,file){
+  const shared=[];
+  const ss=await zipText(z,'xl/sharedStrings.xml');
+  if(ss)String(ss).split('<si>').slice(1).forEach(si=>{
+    let t=''; String(si).replace(/<t[^>]*>([\s\S]*?)<\/t>/g,(m,v)=>{t+=unxml(v);return '';});
+    shared.push(t);
+  });
+  const sheets=Object.keys(z).filter(n=>/^xl\/worksheets\/sheet\d+\.xml$/.test(n))
+    .sort((a,b)=>(+a.replace(/\D/g,''))-(+b.replace(/\D/g,'')));
+  const out=[];
+  for(const name of sheets){
+    const xml=await zipText(z,name);
+    if(!xml)continue;
+    const rows=String(xml).split('</row>').map(r=>{
+      const cells=[];
+      r.replace(/<c\b([^>]*)>([\s\S]*?)<\/c>/g,(m,attrs,inner)=>{
+        const kind=/t="(s|str|inlineStr)"/.exec(attrs);
+        let v=(/<v>([\s\S]*?)<\/v>/.exec(inner)||[])[1];
+        if(kind&&kind[1]==='s')v=shared[+v]||'';
+        else if(kind&&kind[1]==='inlineStr')v=(/<t[^>]*>([\s\S]*?)<\/t>/.exec(inner)||[])[1]||'';
+        if(v!=null&&String(v).trim())cells.push(unxml(String(v)).trim());
+        return m;
+      });
+      return cells.join(' · ').replace(/\s+/g,' ').trim();
+    }).filter(s=>s.length>2).slice(0,4000);
+    if(!rows.length)continue;
+    out.push('## '+baseName(file.name)+' — '+rows.length+' rows from '+
+      name.split('/').pop().replace('.xml','').replace('sheet','Sheet '));
+    let buf=[];
+    rows.forEach(r=>{buf.push(r+'.');if(buf.length>=5){out.push(buf.join(' '));buf=[];}});
+    if(buf.length)out.push(buf.join(' '));
+  }
+  return out.join('\n\n');
+}
+function csvFields(line){
+  const out=[]; let cur='', q=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(q){
+      if(c==='"'){ if(line[i+1]==='"'){cur+='"';i++;} else q=false; }
+      else cur+=c;
+    }
+    else if(c==='"')q=true;
+    else if(c===','||c==='\t'||c===';'){out.push(cur.trim());cur='';}
+    else cur+=c;
+  }
+  out.push(cur.trim());
+  return out.filter(Boolean);
+}
+function csvToText(text,file){
+  const rows=String(text).split(/\r?\n/).filter(r=>r.trim());
+  if(!rows.length)return '';
+  const head=csvFields(rows[0]);
+  const out=['## '+baseName(file)+' — '+(head.length?head.slice(0,6).join(' / '):'data table')];
+  let buf=[];
+  rows.slice(1).forEach(r=>{
+    const f=csvFields(r);
+    if(!f.length)return;
+    buf.push(f.join(' · ')+'.');
+    if(buf.length>=5){out.push(buf.join(' '));buf=[];}
+  });
+  if(buf.length)out.push(buf.join(' '));
+  return out.join('\n\n');
+}
+function pdfFragments(src){
+  const frags=[];
+  let i=0, n=src.length, x=0, y=0, size=11, lead=0, moved=true, inArr=false, cur='';
+  const nums=[];
+  const readStr=()=>{
+    let depth=0,out='';
+    i++;
+    while(i<n){
+      const c=src[i];
+      if(c==='\\'){
+        const d=src[i+1]; i+=2;
+        if(d==='n')out+='\n';
+        else if(d==='r'||d==='t')out+=' ';
+        else if(d>='0'&&d<='7'){let o=d;while(o.length<3&&src[i]>='0'&&src[i]<='7')o+=src[i++];out+=String.fromCharCode(parseInt(o,8));}
+        else if(d!=='\n'&&d!=='\r')out+=d;
+        continue;
+      }
+      if(c==='('){depth++;out+=c;i++;continue;}
+      if(c===')'){i++;if(!depth)break;depth--;out+=c;continue;}
+      out+=c;i++;
+    }
+    return out;
+  };
+  const show=()=>{
+    let s=cur.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g,'');
+    cur='';
+    if(!s)return;
+    const prev=frags[frags.length-1];
+    if(moved&&prev&&Math.abs(prev.y-y)<=Math.max(prev.size,size)*0.55&&!/\s$/.test(prev.text)&&!/^\s/.test(s)
+      &&x-(prev.x+prev.text.length*prev.size*0.5)<size*0.15)s=' '+s;
+    frags.push({x,y,size,text:s});
+    x+=s.length*size*0.5;
+    moved=false;
+  };
+  while(i<n){
+    const c=src[i];
+    if(c==='('){
+      const s=readStr();
+      if(inArr&&s&&nums.some(v=>v<-180)&&cur&&!/\s$/.test(cur)&&!/^\s/.test(s))cur+=' ';
+      cur+=s;nums.length=0;
+      continue;
+    }
+    if(c==='<'){
+      const e=src.indexOf('>',i);
+      if(e<0)break;
+      let hx=src.slice(i+1,e).replace(/[^0-9A-Fa-f]/g,'');
+      if(hx.length%2)hx=hx.slice(0,-1);
+      let t='';
+      for(let k=0;k<hx.length;k+=2)t+=String.fromCharCode(parseInt(hx.substr(k,2),16));
+      if(t.replace(/[\x00-\x1F]/g,'').length)cur+=t;
+      i=e+1;nums.length=0;continue;
+    }
+    if(c==='%'){while(i<n&&src[i]!=='\n')i++;continue;}
+    if(c==='/'){i++;while(i<n&&!/[\s\/\[\]<>(){}%]/.test(src[i]))i++;nums.length=0;continue;}
+    if(c==='['){inArr=true;nums.length=0;i++;continue;}
+    if(c===']'){inArr=false;i++;continue;}
+    if(c==='{'||c==='}'||c===' '||c==='\r'||c==='\n'||c==='\t'){i++;continue;}
+    if(c==='-'||c==='+'||c==='.'||(c>='0'&&c<='9')){
+      const st=i;
+      while(i<n&&/[0-9.+-]/.test(src[i]))i++;
+      const v=parseFloat(src.slice(st,i));
+      if(!isNaN(v))nums.push(v);
+      if(nums.length>96)nums.shift();
+      continue;
+    }
+    const st=i;
+    while(i<n&&/[A-Za-z*'"0-9]/.test(src[i]))i++;
+    if(i===st){i++;continue;}
+    const op=src.slice(st,i);
+    if(op==='Tf'){const v=nums[nums.length-1];if(v>0&&v<200)size=v;}
+    else if(op==='Tm'){const a=nums.slice(-6);if(a.length===6){x=a[4];y=a[5];}moved=true;}
+    else if(op==='Td'||op==='TD'){
+      const a=nums.slice(-2);
+      if(a.length===2){x+=a[0];y+=a[1];if(op==='TD')lead=-a[1];}
+      moved=true;
+    }
+    else if(op==='TL'){const v=nums[nums.length-1];if(v)lead=v;}
+    else if(op==='T*'){y-=lead;moved=true;}
+    else if(op==='BT'){moved=true;}
+    else if(op==='ET'){show();}
+    else if(op==="'"||op==='"'){y-=lead;show();}
+    else if(op==='Tj'||op==='TJ')show();
+    nums.length=0;
+  }
+  show();
+  return frags;
+}
+function glyphJunk(s){
+  if(!s)return s;
+  const J=/[\u0080-\u009F\u00A1-\u00BF\u00C0-\u00DE]/;
+  const nons=s.replace(/\s/g,'');
+  if(!nons)return s;
+  let j=0;
+  for(const ch of nons)if(J.test(ch))j++;
+  if(j/nons.length>0.03)return s.replace(/[\u0080-\u009F\u00A1-\u00BF\u00C0-\u00DE]/g,'').replace(/[ \t]{2,}/g,' ');
+  return s.replace(/\u00B1/g,'-').replace(/\u00B6/g,'\u2019').replace(/[\u0080-\u009F\u00AD]/g,'');
+}
+function pdfLines(frags){
+  const rows=[];
+  frags.forEach(f=>{
+    const r=rows[rows.length-1];
+    if(r&&Math.abs(f.y-r.y)<=Math.max(f.size,r.size)*0.55){r.frags.push(f);if(f.size>r.size)r.size=f.size;}
+    else rows.push({y:f.y,size:f.size,frags:[f]});
+  });
+  const lines=[];
+  rows.forEach(r=>{
+    if(r.frags.length>1)r.frags.sort((a,b)=>a.x-b.x);
+    let t='', end=null;
+    r.frags.forEach(f=>{
+      if(end!==null&&f.x-end>f.size*0.15&&!/\s$/.test(t)&&!/^\s/.test(f.text))t+=' ';
+      t+=f.text;
+      end=f.x+f.text.length*f.size*0.5;
+    });
+    t=t.replace(/\s+/g,' ').trim();
+    if(t)lines.push({t,size:Math.round(r.size),y:r.y});
+  });
+  if(!lines.length)return '';
+  const w={}; let total=0;
+  lines.forEach(l=>{w[l.size]=(w[l.size]||0)+l.t.length;total+=l.t.length;});
+  let acc=0, med=11;
+  Object.keys(w).map(Number).sort((a,b)=>a-b).forEach(s=>{if(acc<total/2){acc+=w[s];med=s;}});
+  const out=[]; let para='';
+  const flush=()=>{if(para.trim())out.push(para.trim());para='';};
+  lines.forEach((l,ix)=>{
+    const prev=lines[ix-1];
+    if(/^#{1,4}\s/.test(l.t)){flush();out.push(l.t);return;}
+    const words=l.t.split(' ').length;
+    const isHead=l.size>=med*1.12&&l.t.length<=90&&words<=12&&!/[.,;:]$/.test(l.t);
+    if(isHead){flush();out.push('## '+l.t);return;}
+    if(prev&&Math.abs(prev.y-l.y)>l.size*1.9)flush();
+    para+=(para?' ':'')+l.t;
+    if(para.length>900)flush();
+  });
+  flush();
+  return out.join('\n\n');
+}
+async function pdfToText(buf,file){
+  const u8=buf instanceof Uint8Array?buf:new Uint8Array(buf);
+  const bin=latin1(u8);
+  const pages=[]; let found=0;
+  const re=/stream\r\n|stream\n|stream\r/g;
+  let m;
+  while((m=re.exec(bin))){
+    const st=m.index+m[0].length;
+    const en=bin.indexOf('endstream',st);
+    if(en<0)break;
+    const dict=bin.slice(Math.max(0,m.index-600),m.index);
+    let content='';
+    try{
+      if(/\/FlateDecode/.test(dict))content=latin1(await inflateLoose(u8of(bin.slice(st,en))));
+      else if(!/\/(?:DCTDecode|JPXDecode|CCITTFaxDecode|LZWDecode|ASCII85Decode|RunLengthDecode)/.test(dict))content=bin.slice(st,en);
+    }catch(e){content='';}
+    if(content&&content.indexOf('BT')>-1&&content.indexOf('Tf')>-1){
+      const text=pdfLines(pdfFragments(content));
+      if(text.replace(/\s/g,'').length>2){pages.push(glyphJunk(text));found++;}
+    }
+    re.lastIndex=Math.max(en+9,st);
+  }
+  if(!found)throw new Error('No selectable text in that PDF - it is probably a scan. Paste the text, or run OCR and try again.');
+  return pages.join('\n\n');
+}
+function textRuns(s){return s.split(/[^\x20-\x7E]+/).filter(x=>x.length>18&&/[a-zA-Z]{4}/.test(x)).join(' ');}
+function legacyToText(u8){
+  const a=textRuns(latin1(u8));
+  let b='';
+  try{b=textRuns(new TextDecoder('utf-16le').decode(u8.subarray(0,Math.min(u8.length,800000))));}catch(e){}
+  const sc=s=>(s.match(/[a-zA-Z]{4,}/g)||[]).length;
+  return sc(b)>sc(a)?b:a;
+}
+/* ---- binary sniffing + guards -------------------------------------------
+   Extension names lie (a .ppt renamed to .txt used to import as "text" and
+   show font-table garbage). Magic bytes don't. Every import is sniffed
+   first; text paths are then screened for binary soup before use. ---- */
+function sniffType(u8,ext){
+  if(u8.length<8)return null;
+  const head=latin1(u8.subarray(0,16));
+  const c=i=>head.charCodeAt(i);
+  if(head.slice(0,5)==='%PDF-')return {kind:'pdf',why:'PDF'};
+  if(head.slice(0,5)==='{'+String.fromCharCode(92)+'rtf')return {kind:'rtf',why:'RTF'};
+  if(c(0)===0x50&&c(1)===0x4b&&(c(2)===3||c(2)===5||c(2)===7))return {kind:'zip',why:'zip-based document'};
+  if(c(0)===0xd0&&c(1)===0xcf&&c(2)===0x11&&c(3)===0xe0)
+    return {kind:'ole',why:ext==='ppt'?'.ppt (legacy PowerPoint)':ext==='doc'?'.doc (legacy Word)':ext==='xls'?'.xls (legacy Excel)':'legacy Office binary'};
+  if(c(0)===0xff&&c(1)===0xd8&&c(2)===0xff)return {kind:'image',why:'JPEG image'};
+  if(head.slice(0,4)==='\x89PNG')return {kind:'image',why:'PNG image'};
+  if(head.slice(0,3)==='GIF')return {kind:'image',why:'GIF image'};
+  if(head.slice(0,4)==='OTTO'||head.slice(0,4)==='ttcf'||(c(0)===0&&c(1)===1&&c(2)===0&&c(3)===0))
+    return {kind:'font',why:'font file (TTF/OTF)'};
+  return null;
+}
+/* Which Office format is this zip, by its parts? */
+function zipKind(z){
+  const names=Object.keys(z);
+  if(names.some(n=>n.indexOf('word/')===0))return {kind:'docx',why:'Word (.docx)'};
+  if(names.some(n=>n.indexOf('xl/')===0))return {kind:'xlsx',why:'Excel (.xlsx)'};
+  if(names.some(n=>n.indexOf('ppt/')===0))return {kind:'pptx',why:'PowerPoint (.pptx)'};
+  return {kind:'zip',why:'plain .zip archive'};
+}
+/* Control characters and clipboard junk that never appear in real study text. */
+function cleanText(s){
+  return String(s).replace(/\r\n?/g,'\n').replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F\u0080-\u009F\uFFF9-\uFFFF\uFFFD]/g,'');
+}
+/* Catches binary text (embedded font tables, file bytes) no signature caught:
+   mostly non-printable, or studded with TrueType table tags. */
+function looksGarbage(s){
+  const t=String(s||'');
+  if(t.length<60)return false;
+  const sample=t.slice(0,6000);
+  const ctrl=(sample.match(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g)||[]).length;
+  const printable=sample.replace(/[^\x20-\x7E\t\n\r\u00A0-\uFFFD]/g,'').length;
+  if(ctrl>sample.length*0.02||printable<sample.length*0.5)return true;
+  const rare=(sample.match(/\b(cmap|glyf|hhea|hmtx|maxp|loca|fpgm|GSUB|GPOS|GDEF)\b/g)||[]).length;
+  const fonty=/Monotype|Layout logic|TrueType|OpenType Layout|IDcharacteristics/i.test(sample);
+  return rare>=3||(rare>=1&&fonty);
+}
+/* UTF-8 first; if that produces replacement characters, re-read as windows-1252.
+   The high-byte table is applied by hand (some decoders fake 1252 with ISO-8859-1). */
+function decodeBest(u8){
+  let a='';
+  try{a=new TextDecoder('utf-8',{fatal:false}).decode(u8);}catch(e){a=latin1(u8);}
+  if(!(a.match(/\uFFFD/g)||[]).length)return cleanText(a);
+  let b='';
+  const CH=8192;
+  for(let i=0;i<u8.length;i+=CH){const s=u8.subarray(i,Math.min(u8.length,i+CH));let t='';
+    for(let j=0;j<s.length;j++){const c=s[j];t+=c>127?cp1252(c):String.fromCharCode(c);}b+=t;}
+  return cleanText((b.match(/\uFFFD/g)||[]).length<(a.match(/\uFFFD/g)||[]).length?b:a);
+}
+const CP1252={0x80:'\u20ac',0x82:'\u201a',0x83:'\u0192',0x84:'\u201e',0x85:'\u2026',0x86:'\u2020',0x87:'\u2021',0x88:'\u02c6',0x89:'\u2030',0x8a:'\u0160',0x8b:'\u2039',0x8c:'\u0152',0x8e:'\u017d',0x91:'\u2018',0x92:'\u2019',0x93:'\u201c',0x94:'\u201d',0x95:'\u2022',0x96:'\u2013',0x97:'\u2014',0x98:'\u02dc',0x99:'\u2122',0x9a:'\u0161',0x9b:'\u203a',0x9c:'\u0153',0x9e:'\u017e',0x9f:'\u0178'};
+const cp1252=b=>CP1252[b]||String.fromCharCode(b);
+/* Minimal RTF reader: group-aware, honours \uN and \'xx escapes, skips
+   destination groups (font tables, stylesheets, pictures) that hold no
+   study text. */
+function rtfToText(src){
+  src=String(src||'');
+  const SKIP=/^(fonttbl|colortbl|stylesheet|info|pict|object|header|footer|filetbl|themedata|fchars|lchars|listtable|listoverridetable|rsidtbl|generator|xmlnstbl|field|fldinst|xe|tc|nonshppict|shppict|pntext|pgptbl|tgbl|wptb)$/;
+  const out=[], stack=[];
+  let skip=false, uc=1;
+  const emit=s=>{if(!skip)out.push(s);};
+  let i=0;
+  while(i<src.length){
+    const c=src[i];
+    if(c==='{'){stack.push([skip,uc]);i++;continue;}
+    if(c==='}'){const t=stack.pop();if(t){skip=t[0];uc=t[1];}i++;continue;}
+    if(c==='\\'){
+      const m=/^\\([a-zA-Z]+)(-?\d+)? ?/.exec(src.slice(i,i+32));
+      if(m){
+        const word=m[1], num=m[2]===undefined?null:parseInt(m[2],10);
+        i+=m[0].length;
+        if(SKIP.test(word)){skip=true;}
+        else if(word==='uc')uc=num===null?1:num;
+        else if(word==='par'||word==='line'||word==='sect'||word==='page')emit('\n');
+        else if(word==='tab')emit('\t');
+        else if(word==='u'){
+          const code=num||0, real=code<0?code+65536:code;
+          if(real>31||real===9)emit(String.fromCharCode(real));
+          for(let k=0;k<uc&&k<10;k++){
+            if(src[i]==='\\'&&src[i+1]==="'")i+=4;
+            else if(src[i]==='\\')break;
+            else i++;
+          }
+        }
+        else if(word==='bin')i+=Math.max(0,num||0);
+        continue;
+      }
+      const c1=src[i+1];
+      if(c1==="'"){emit(cp1252(parseInt(src.substr(i+2,2),16)||0));i+=4;continue;}
+      if(c1==='\\'||c1==='{'||c1==='}'){emit(c1);i+=2;continue;}
+      if(c1==='~'){emit(' ');i+=2;continue;}
+      i+=c1==='*'?2:1;
+      continue;
+    }
+    if(c!=='\n'&&c!=='\r')emit(c);
+    i++;
+  }
+  return out.join('').replace(/\n{3,}/g,'\n\n');
+}
+/* PPTX: slideN.xml parts in the zip. Title placeholder text becomes ## headings. */
+async function pptxToText(z,file){
+  const slideNo=n=>parseInt((n.match(/(\d+)\.xml$/)||[])[1]||'0',10);
+  const names=Object.keys(z).filter(n=>/^ppt\/slides\/slide\d+\.xml$/.test(n))
+    .sort((a,b)=>slideNo(a)-slideNo(b));
+  if(!names.length)throw new Error('No slides were found in that .pptx - the file may be damaged. Re-save it from PowerPoint and retry.');
+  const out=[];
+  for(let k=0;k<names.length;k++){
+    const xml=await zipText(z,names[k]);
+    if(!xml)continue;
+    const parts=['## '+baseName(file.name)+' - slide '+slideNo(names[k])];
+    let added=0;
+    String(xml).split(/<p:sp[ >]/).slice(1).forEach(sp=>{
+      sp=sp.split('</p:sp>')[0];
+      const isTitle=/<p:ph[^>]*type="(?:ctr)?[Tt]itle"/.test(sp);
+      sp.split(/<a:p[ >]/).slice(1).forEach(p=>{
+        let t='';
+        p.replace(/<a:t>([\s\S]*?)<\/a:t>/g,(m,v)=>{t+=unxml(v);return '';});
+        t=t.replace(/\s+/g,' ').trim();
+        if(!t)return;
+        parts.push((isTitle?'## ':'')+t);
+        added++;
+      });
+    });
+    if(!added){ /* tables, grouped shapes, text outside <p:sp> */
+      String(xml).replace(/<a:t>([\s\S]*?)<\/a:t>/g,(m,v)=>{
+        const t=unxml(v).replace(/\s+/g,' ').trim();
+        if(t){parts.push(t);added++;}
+        return m;
+      });
+    }
+    if(added)out.push(parts.join('\n\n'));
+  }
+  return out.join('\n\n\n');
+}
+function autoHeads(text,name){
+  const NL=String.fromCharCode(10), CR=String.fromCharCode(13), NB=String.fromCharCode(160);
+  const t=String(text||"").split(CR+NL).join(NL).split(CR).join(NL).split(NB).join(" ").trim();
+  if(!t)return "";
+  if(/^#{1,4}\s+\S/m.test(t))return t;
+  const paras=t.split(NL+NL).map(p=>p.replace(/\s+/g," ").trim()).filter(Boolean);
+  const out=[]; let buf="", k=1;
+  const push=()=>{ if(!buf.trim())return; out.push("## "+name+" - part "+k); k++; out.push(buf.trim()); buf=""; };
+  paras.forEach(p=>{ buf+=(buf?" ":"")+p; if(buf.length>1100)push(); });
+  push();
+  return out.join(NL+NL);
+}
+
+function setImportBusy(on,label){
+  if(on)modal(`<div class="row" style="gap:12px;align-items:flex-start">
+    <span class="spin" style="width:18px;height:18px;border-width:3px;color:var(--indigo);margin-top:2px"></span>
+    <div><h3>Reading ${esc(label||'your file')}</h3>
+    <p class="small mut" style="margin-top:4px">Parsing locally in this tab. Office files are unzipped in memory and PDFs are decoded with the browser's built-in decompressor - nothing is uploaded.</p></div></div>`);
+  else closeModal();
+}
+async function importFile(file){
+  setImportBusy(true,file.name);
+  await new Promise(r=>setTimeout(r,60));
+  try{
+    if(file.size>12*1024*1024)throw new Error('That file is '+(file.size/1048576).toFixed(1)+' MB - over the 12 MB limit. Export only the chapters you need.');
+    const u8=new Uint8Array(await file.arrayBuffer());
+    const ext=(String(file.name||'').toLowerCase().split('.').pop()||'txt');
+    const sniff=sniffType(u8,ext);
+    let kind=(sniff&&sniff.kind)||kindOf(file).kind;
+    if(kind==='ole')kind='legacy';
+    let text='', fmt=kind;
+    if(kind==='text')text=decodeBest(u8);
+    else if(kind==='csv')text=csvToText(decodeBest(u8),file.name);
+    else if(kind==='pdf')text=await pdfToText(u8,file.name);
+    else if(kind==='docx'||kind==='xlsx'||kind==='pptx'||kind==='zip'){
+      const z=await unzip(u8);
+      const zk=zipKind(z);
+      if(zk.kind==='zip')throw new Error('That is a plain .zip archive, not a document. Unzip it first, then import the PDF, DOCX, PPTX or TXT that is inside.');
+      kind=zk.kind; fmt=zk.kind;
+      if(kind==='docx'){
+        const main=await zipText(z,'word/document.xml');
+        if(!main)throw new Error('That .docx has no word/document.xml - the file may be damaged. Re-save it from Word and retry.');
+        text=docxToText(main);
+      }
+      else if(kind==='xlsx')text=await xlsxToText(z,file);
+      else text=await pptxToText(z,file);
+    }
+    else if(kind==='rtf'){
+      text=rtfToText(decodeBest(u8));
+      if(!text.replace(/\s/g,'').length)throw new Error('No readable text came out of that RTF - it may hold only images or tables. Open it, copy the text and paste it into the box on this page.');
+    }
+    else if(kind==='legacy')text=legacyToText(u8);
+    else if(kind==='image')throw new Error('That is a picture ('+sniff.why+'), not text. Scanned or photographed pages need OCR - run one and import the result, or paste the text into the box on this page.');
+    else if(kind==='font')throw new Error('That is a '+sniff.why+', not a document. Fonts are embedded inside files like .pptx - import the document itself (PDF, PPTX, DOCX, XLSX, TXT), not the font.');
+    else throw new Error('Unsupported file type. Use PDF, PPTX, DOCX, XLSX, CSV, RTF, TXT or MD - or paste the text into the box on this page.');
+    if((kind==='text'||kind==='csv')&&looksGarbage(text))
+      throw new Error('That file is binary data'+(sniff?' ('+sniff.why+')':'')+', not readable text - importing it would only show garbage. Supported: PDF, PPTX, DOCX, XLSX, CSV, RTF, TXT, MD. Or paste the text.');
+    text=autoHeads(cleanText(text),baseName(file.name));
+    const letters=text.replace(/[^A-Za-z0-9]/g,'').length;
+    if(letters<20){
+      let why='The file looks empty.';
+      if(kind==='legacy')why=(sniff?sniff.why+' is a legacy binary format':'.doc and .xls are legacy binary formats')+' that browsers cannot read reliably - open the file, use Save As to make a .docx/.xlsx/.pptx, then import again.';
+      else if(kind==='pdf')why='The PDF has no text layer - it is a scan of paper. Run OCR on it, or paste the text into the box on this page.';
+      else if(kind==='xlsx')why='No text cells were found. Check the workbook really has text in its cells (numbers and formulas alone give us nothing to revise) and that the sheet is not hidden.';
+      else if(kind==='docx')why='No paragraph text was found - the document may be empty or made only of images.';
+      else if(kind==='pptx')why='No slide text was found - the deck may be built from images only. Export it as PDF (with OCR if needed) or paste the slide text here.';
+      else if(kind==='csv')why='No text fields were found. Check the file has a header row and some rows of text.';
+      else if(kind==='rtf')why='The RTF held no readable words.';
+      throw new Error('Only '+letters+' readable characters came out of that file. '+why);
+    }
+    const small=letters<120;
+    const mat=parseMaterial(text,file.name||('Imported '+String(ext).toUpperCase()));
+    if(!mat.chunks.length)throw new Error('Text was read but no sentences could be chunked. Add headings like "## Chapter 3, Section 1" and analyze again.');
+    mat.format=fmt;
+    S.material=mat;
+    const mapped=mat.map.filter(x=>x.mapped).length;
+    const ready=QUESTIONS.filter(q=>{const x=mat.map.find(y=>y.id===q.topic);return x&&x.mapped;}).length;
+    S.analysis={ok:true,at:Date.now(),ms:0,chunks:mat.chunks.length,topics:mapped,
+      words:mat.words,questions:ready,name:mat.name,format:fmt,letters:letters,small:small};
+    persist(); setImportBusy(false);
+    if(S.page!=='upload')go('upload'); else render();
+    toast(small?String(ext).toUpperCase()+' imported - short file ('+letters+' characters). Add more content for full coverage.'
+      :String(ext).toUpperCase()+' imported: '+mat.chunks.length+' chunks · '+mapped+'/6 topics');
+    const box=$('#analysisResult');
+    if(box&&box.scrollIntoView)box.scrollIntoView({behavior:'smooth',block:'center'});
+  }catch(e){
+    setImportBusy(false);
+    S.analysis={ok:false,at:Date.now(),msg:e.message||'Could not read that file.'};
+    if(S.page!=='upload')go('upload'); else render();
+    toast('Import failed - the reason is in the red panel.');
+    const box=$('#analysisResult');
+    if(box&&box.scrollIntoView)box.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+/* ================= export: pdf / docx / txt ================= */
+function whoName(){return (S.user&&S.user.name)||'Student';}
+function dlMenu(kind){
+  const meta={report:['Gap report','Topic breakdown, why each answer failed and priority scores'],
+    plan:['Revision plan','Priority order plus a day-by-day schedule'],
+    class:['Class report','Class accuracy, weak topics and the re-teach list']}[kind]||['Report',''];
+  modal(`<h3>Download ${meta[0]}</h3>
+  <p class="small mut" style="margin-top:4px">${esc(meta[1])}. Generated in your browser - no server, no upload.</p>
+  <div class="stack" style="margin-top:14px;gap:8px">
+    <button class="dl-opt" data-action="dl" data-kind="${kind}" data-fmt="pdf">${ico('doc',18)}
+      <div><b>PDF (.pdf)</b><span>Print-ready A4 - best for printing or emailing</span></div></button>
+    <button class="dl-opt" data-action="dl" data-kind="${kind}" data-fmt="docx">${ico('doc',18)}
+      <div><b>Word (.docx)</b><span>Editable with real tables - best for reports</span></div></button>
+    <button class="dl-opt" data-action="dl" data-kind="${kind}" data-fmt="txt">${ico('doc',18)}
+      <div><b>Plain text (.txt)</b><span>Paste into any notes app</span></div></button>
+  </div>
+  <div class="btn-row" style="margin-top:14px"><button class="btn btn-ghost" data-action="close-modal">Cancel</button></div>`);
+}
+function reportDoc(){
+  const a=latest(), rows=a?gapRows(a):[], P=docBlocks(), B=P.b;
+  P('GapFinder AI - Gap Report',{b:1,sz:20,after:6});
+  P(new Date().toLocaleString(),{sz:9,after:1});
+  P('Student: '+whoName(),{sz:9,after:1});
+  if(!a){P('No attempt recorded yet.',{sz:10});return {title:'Gap Report',blocks:B,txt:reportText()};}
+  P(`Attempt ${a.n} · ${fmtDate(a.at)} · ${a.acc}% mastery (${a.correct}/${a.total})`,{sz:9,after:1});
+  P(`Material: ${S.material?S.material.name:'-'} · ${S.material?S.material.chunks.length:0} chunks`,{sz:9,after:14});
+  P('Topic breakdown (sorted by priority)',{b:1,sz:13,after:6});
+  B.push({table:{xs:[54,290,352,420,476],
+    head:['Topic','Accuracy','Weight','Priority','Band'],
+    rows:rows.map(r=>[r.name,r.tested?r.acc+'% ('+r.correct+'/'+r.total+')':'untested',
+      Math.round(r.weight*100)+'%',r.tested?String(r.priority):'-',r.band])}});
+  P('',{sz:8});
+  P('Why each gap exists',{b:1,sz:13,after:6});
+  rows.filter(r=>r.tested).forEach(r=>{
+    P(r.name+' - '+r.acc+'% accuracy',{b:1,sz:10,after:1});
+    P(r.why,{sz:9.5,after:8});
+  });
+  P('Missed questions',{b:1,sz:13,after:6});
+  let missed=0;
+  QUESTIONS.forEach((q,i)=>{
+    if(a.answers[i]===q.answer)return;
+    missed++;
+    P('['+q.citation+'] '+q.q,{b:1,sz:9.5,after:1});
+    P('Your answer: '+(a.answers[i]<0?'skipped':q.options[a.answers[i]]),{sz:9,after:1});
+    P('Correct: '+q.options[q.answer],{sz:9,after:1});
+    P(q.why,{sz:9,after:8});
+  });
+  if(!missed)P('Every question was answered correctly.',{sz:9.5,after:8});
+  P('Priority Score = (100 - Accuracy) x Exam Weight. Every line above is generated from chunks of the uploaded material - no outside knowledge.',{sz:8.5});
+  return {title:'Gap Report',blocks:B,txt:reportText()};
+}
+function planDoc(){
+  const p=planSessions(), a=latest(), P=docBlocks(), B=P.b;
+  P('GapFinder AI - Revision Plan',{b:1,sz:20,after:6});
+  P(new Date().toLocaleString(),{sz:9,after:1});
+  P('Student: '+whoName(),{sz:9,after:1});
+  P(`Days: ${p.days} · Hours/day: ${p.hours} · Total: ${fmtMins(p.totalMin)}`,{sz:9,after:1});
+  P(a?`Built from Attempt ${a.n}: ${a.acc}% mastery (${a.correct}/${a.total})`:'Built before any attempt',{sz:9,after:14});
+  P('Priority order',{b:1,sz:13,after:6});
+  B.push({table:{xs:[54,74,300,380,450],head:['#','Topic','Accuracy','Weight','Priority'],
+    rows:p.rows.map((r,i)=>[String(i+1),r.name,r.tested?r.acc+'%':'untested',
+      Math.round(r.weight*100)+'%',r.tested?String(r.priority):'-'])}});
+  P('',{sz:8});
+  P('Day by day',{b:1,sz:13,after:6});
+  Object.keys(p.grouped).forEach(d=>{
+    const list=p.grouped[d];
+    P(`Day ${d} · ${fmtMins(list.reduce((s,x)=>s+x.mins,0))} · ${list.length} session${list.length>1?'s':''}`,{b:1,sz:10.5,after:3});
+    list.forEach((s,i)=>{
+      P(`${i+1}. ${s.topic.name}${s.kind==='retest'?' (RE-TEST)':''} - ${s.mins} min`,{sz:9.5,after:1});
+      P('    '+s.focus,{sz:8.5,after:1});
+      P('    Source: '+s.citation,{sz:8.5,after:6});
+    });
+  });
+  P('Order: priority descending. Priority = (100 - accuracy) x exam weight. Re-test on the last day rebuilds this plan.',{sz:8.5});
+  return {title:'Revision Plan',blocks:B,txt:planText()};
+}
+function classDoc(){
+  const P=docBlocks(), B=P.b;
+  const students=CLASS_STUDENTS.length;
+  const avg=Math.round(CLASS_STUDENTS.reduce((s,x)=>s+x.m,0)/students);
+  const entries=Object.entries(CLASS_TOPIC).sort((a,b)=>a[1]-b[1]);
+  P('GapFinder AI - Class Report',{b:1,sz:20,after:6});
+  P(new Date().toLocaleString(),{sz:9,after:1});
+  P(`Students: ${students} · Class average: ${avg}% · Topics: 6`,{sz:9,after:14});
+  P('Class accuracy by topic',{b:1,sz:13,after:6});
+  B.push({table:{xs:[54,280,360,430],head:['Topic','Class accuracy','Weak students','Action'],
+    rows:entries.map(([id,v])=>[topicById(id).name,v+'%',
+      String(CLASS_STUDENTS.filter(s=>s.w===id).length),v<60?'Re-teach':'Maintain'])}});
+  P('',{sz:8});
+  P('Students below 60%',{b:1,sz:13,after:6});
+  const low=CLASS_STUDENTS.filter(s=>s.m<60);
+  if(low.length)low.forEach(s=>P(`${s.n} - ${s.m}% · weakest topic: ${topicById(s.w).name}`,{sz:9.5,after:3}));
+  else P('Nobody is below 60%.',{sz:9.5,after:3});
+  P('',{sz:8});
+  P('Re-teach list (same priority formula, one level up)',{b:1,sz:13,after:6});
+  entries.filter(([,v])=>v<60).forEach(([id,v],i)=>P(`${i+1}. ${topicById(id).name} - ${v}% class accuracy - ${Math.ceil((60-v)/12)} day(s) of re-teaching`,{sz:9.5,after:3}));
+  return {title:'Class Report',blocks:B,txt:classText()};
+}
+/* docBlocks is a tiny collector: pushing a block also exposes the array on .b */
+function docBlocks(){
+  const b=[];
+  const push=(t,o)=>{b.push(Object.assign({t},o||{}));};
+  push.b=b;
+  return push;
+}
+function toPdf(spec){
+  const W=595,H=842,M=54;
+  const enc=s=>String(s==null?'':s).replace(/[\\()]/g,c=>'\\'+c).replace(/[^\x20-\x7E\xA0-\xFF]/g,'?');
+  const wrap=(s,max)=>{
+    const words=String(s==null?'':s).split(/\s+/).filter(Boolean);
+    if(!words.length)return [''];
+    const out=[]; let line='';
+    words.forEach(w=>{if(line&&(line+' '+w).length>max){out.push(line);line=w;}else line=line?line+' '+w:w;});
+    if(line)out.push(line);
+    return out;
+  };
+  const pages=[]; let cur=[], y=H-M;
+  const brk=()=>{pages.push(cur);cur=[];y=H-M;};
+  spec.blocks.forEach(b=>{
+    if(b.table){
+      const xs=b.table.xs||[M,M+200,M+300,M+390];
+      const row=(cells,bold)=>{
+        if(y-15<M)brk();
+        cur.push({cells:cells.map(c=>String(c==null?'':c)),xs,y,bold});
+        y-=15;
+      };
+      row(b.table.head,1);
+      b.table.rows.forEach(r=>row(r,0));
+      y-=10;
+      return;
+    }
+    const sz=b.sz||10.5, lead=Math.round(sz*1.42);
+    const max=Math.max(20,Math.floor((W-2*M)/(sz*0.49)));
+    wrap(b.t,max).forEach(line=>{
+      if(y-lead<M)brk();
+      cur.push({t:line,b:b.b,sz,y});
+      y-=lead;
+    });
+    if(b.after)y-=b.after;
+  });
+  pages.push(cur);
+  const content=pg=>{
+    let s='BT\n';
+    pg.forEach(l=>{
+      if(l.cells){
+        s+='/'+(l.bold?'F2':'F1')+' 9 Tf\n';
+        l.cells.forEach((c,i)=>{
+          s+='1 0 0 1 '+(l.xs[i]||M)+' '+l.y.toFixed(1)+' Tm ('+enc(c.slice(0,110))+') Tj\n';
+        });
+      }else{
+        s+='/'+(l.b?'F2':'F1')+' '+l.sz+' Tf\n1 0 0 1 '+M+' '+l.y.toFixed(1)+' Tm ('+enc(l.t)+') Tj\n';
+      }
+    });
+    return s+'ET';
+  };
+  const objs=[], kids=pages.map((_,i)=>(5+i*2)+' 0 R').join(' ');
+  objs.push('<< /Type /Catalog /Pages 2 0 R >>');
+  objs.push('<< /Type /Pages /Kids ['+kids+'] /Count '+pages.length+' >>');
+  objs.push('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+  objs.push('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  pages.forEach((pg,i)=>{
+    const c=content(pg);
+    objs.push('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+W+' '+H+'] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents '+(6+i*2)+' 0 R >>');
+    objs.push('<< /Length '+c.length+' >>\nstream\n'+c+'\nendstream');
+  });
+  let out='%PDF-1.4\n';
+  const offs=[];
+  objs.forEach((o,i)=>{offs.push(out.length);out+=(i+1)+' 0 obj\n'+o+'\nendobj\n';});
+  const xref=out.length;
+  out+='xref\n0 '+(objs.length+1)+'\n0000000000 65535 f \n';
+  offs.forEach(o=>{out+=String(o).padStart(10,'0')+' 00000 n \n';});
+  out+='trailer\n<< /Size '+(objs.length+1)+' /Root 1 0 R >>\nstartxref\n'+xref+'\n%%EOF';
+  return u8of(out);
+}
+let CRC=null;
+function crc32(u8){
+  if(!CRC){CRC=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;CRC[n]=c>>>0;}}
+  let c=0xFFFFFFFF;
+  for(let i=0;i<u8.length;i++)c=CRC[(c^u8[i])&255]^(c>>>8);
+  return (c^0xFFFFFFFF)>>>0;
+}
+function zipStore(files){
+  const te=new TextEncoder();
+  const parts=[], central=[];
+  let off=0;
+  files.forEach(f=>{
+    const name=te.encode(f.name), crc=crc32(f.data), len=f.data.length;
+    const lh=new Uint8Array(30+name.length), lv=new DataView(lh.buffer);
+    lv.setUint32(0,0x04034b50,true); lv.setUint16(4,20,true); lv.setUint16(6,0x0800,true);
+    lv.setUint16(8,0,true); lv.setUint16(10,0,true); lv.setUint16(12,0x21,true);
+    lv.setUint32(14,crc,true); lv.setUint32(18,len,true); lv.setUint32(22,len,true);
+    lv.setUint16(26,name.length,true); lv.setUint16(28,0,true);
+    lh.set(name,30);
+    parts.push(lh,f.data);
+    const ch=new Uint8Array(46+name.length), cv=new DataView(ch.buffer);
+    cv.setUint32(0,0x02014b50,true); cv.setUint16(4,20,true); cv.setUint16(6,20,true);
+    cv.setUint16(8,0x0800,true); cv.setUint16(10,0,true); cv.setUint16(12,0,true); cv.setUint16(14,0x21,true);
+    cv.setUint32(16,crc,true); cv.setUint32(20,len,true); cv.setUint32(24,len,true);
+    cv.setUint16(28,name.length,true); cv.setUint16(30,0,true); cv.setUint16(32,0,true);
+    cv.setUint16(34,0,true); cv.setUint16(36,0,true); cv.setUint32(38,0,true); cv.setUint32(42,off,true);
+    ch.set(name,46);
+    central.push(ch);
+    off+=30+name.length+len;
+  });
+  const cdLen=central.reduce((s,c)=>s+c.length,0);
+  const end=new Uint8Array(22), ev=new DataView(end.buffer);
+  ev.setUint32(0,0x06054b50,true); ev.setUint16(8,files.length,true); ev.setUint16(10,files.length,true);
+  ev.setUint32(12,cdLen,true); ev.setUint32(16,off,true);
+  const all=parts.concat(central,[end]);
+  const total=all.reduce((s,c)=>s+c.length,0);
+  const out=new Uint8Array(total);
+  let p=0;
+  all.forEach(c=>{out.set(c,p);p+=c.length;});
+  return out;
+}
+function toDocx(spec){
+  const x=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const run=(t,o)=>{
+    o=o||{};
+    return '<w:r><w:rPr>'+(o.b?'<w:b/>':'')+(o.sz?'<w:sz w:val="'+Math.round(o.sz*2)+'"/><w:szCs w:val="'+Math.round(o.sz*2)+'"/>':'')+
+      '</w:rPr><w:t xml:space="preserve">'+x(t)+'</w:t></w:r>';
+  };
+  const para=(t,o)=>{
+    o=o||{};
+    return '<w:p><w:pPr>'+(o.after!=null?'<w:spacing w:after="'+Math.round(o.after*20)+'"/>':'')+
+      (o.b?'<w:keepNext/>':'')+'</w:pPr>'+run(t,o)+'</w:p>';
+  };
+  const tbl=t=>{
+    const n=t.head.length||1, cw=Math.floor(9600/n);
+    const cell=(v,b)=>'<w:tc><w:tcPr><w:tcW w:w="'+cw+'" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:spacing w:after="20"/></w:pPr>'+run(String(v==null?'':v),{b:b,sz:9})+'</w:p></w:tc>';
+    const bd=['top','left','bottom','right','insideH','insideV']
+      .map(s=>'<w:'+s+' w:val="single" w:sz="4" w:space="0" w:color="D4D4D8"/>').join('');
+    const grid='<w:tblGrid>'+t.head.map(()=>'<w:gridCol w:w="'+cw+'"/>').join('')+'</w:tblGrid>';
+    return '<w:tbl><w:tblPr><w:tblW w:w="5000" w:type="pct"/><w:tblBorders>'+bd+'</w:tblBorders></w:tblPr>'+grid+
+      '<w:tr>'+t.head.map(h=>cell(h,1)).join('')+'</w:tr>'+
+      t.rows.map(r=>'<w:tr>'+r.map(c=>cell(c,0)).join('')+'</w:tr>').join('')+'</w:tbl>';
+  };
+  const body=spec.blocks.map(b=>b.table?tbl(b.table)+para('',{sz:6}):para(b.t,b)).join('');
+  const doc='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+body+
+    '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="720" w:footer="720" w:gutter="0"/></w:sectPr></w:body></w:document>';
+  const ct='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'+
+    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'+
+    '<Default Extension="xml" ContentType="application/xml"/>'+
+    '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
+  const rels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+  const te=new TextEncoder();
+  return zipStore([{name:'[Content_Types].xml',data:te.encode(ct)},
+    {name:'_rels/.rels',data:te.encode(rels)},
+    {name:'word/document.xml',data:te.encode(doc)}]);
+}
+function exportFile(kind,fmt){
+  try{
+    const spec=kind==='plan'?planDoc():kind==='class'?classDoc():reportDoc();
+    closeModal();
+    const base='gapfinder-'+kind+'-'+todayKey();
+    if(fmt==='pdf')saveBlob(base+'.pdf',new Blob([toPdf(spec)],{type:'application/pdf'}));
+    else if(fmt==='docx')saveBlob(base+'.docx',new Blob([toDocx(spec)],
+      {type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}));
+    else saveBlob(base+'.txt',new Blob([spec.txt],{type:'text/plain;charset=utf-8'}));
+  }catch(e){
+    closeModal();
+    toast('Export failed: '+(e.message||e));
+  }
+}
+
+/* ================= boot ================= */
+restore();
+render();
+</script>
+</body>
+</html>
